@@ -7,4 +7,4 @@
    - pip install -r requirements.txt
 
   scripts:
-   - pytest ./app/tests/test_endpoints.py
+   - -m pytest
