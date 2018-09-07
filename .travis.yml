@@ -7,4 +7,4 @@
    - pip install -r requirements.txt
 
   scripts:
-   - echo "foo"
+   - pytest ./app/tests/test_endpoints.py
