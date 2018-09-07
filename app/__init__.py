@@ -1,5 +1,5 @@
 """__init__"""
-from flask import Flask, jsonify, abort
+from flask import Flask
 
 
 def create_app():
@@ -49,5 +49,26 @@ def create_app():
             return 'Order id {} has been updated'.format(ids[0]["order_id"])
 
         return jsonify({"Order": ids})
+
+    menu = OrderFood().current_menu()
+
+    @app.route("/api/V1/menu", methods=['POST'])
+    def add_meal_to_menu():
+        mealname = [meal[key] for meal in menu for key in meal.keys() if key == 'foodname']
+        if request.json['foodname'] not in mealname:
+            if not menu:
+                meal = {'order_id': 1,
+                        "foodname": request.json['foodname'],
+                        "price": request.json['price']}
+            else:
+                meal = {'order_id': menu[-1]['order_id'] + 1,
+                        "foodname": request.json['foodname'],
+                        "price": request.json['price']}
+
+            menu.append(meal)
+
+            return 'Meal added', 201
+
+        return 'Meal is already in the menu', 400
 
     return app
