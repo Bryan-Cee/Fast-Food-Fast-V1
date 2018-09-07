@@ -12,23 +12,28 @@ def create_app():
 
     menu = OrderFood().current_menu()
 
-    @app.route("/api/V1/menu", methods=['POST'])
+    @app.route("/api/V1/menu", methods=['POST', 'GET'])
     def add_meal_to_menu():
-        mealname = [meal[key] for meal in menu for key in meal.keys() if key == 'foodname']
-        if request.json['foodname'] not in mealname:
-            if not menu:
-                meal = {'order_id': 1,
-                        "foodname": request.json['foodname'],
-                        "price": request.json['price']}
-            else:
-                meal = {'order_id': menu[-1]['order_id'] + 1,
-                        "foodname": request.json['foodname'],
-                        "price": request.json['price']}
+        if request.method == 'POST':
+            mealname = [meal[key] for meal in menu for key in meal.keys() if key == 'foodname']
+            if request.json['foodname'] not in mealname:
+                if not menu:
+                    meal = {'order_id': 1,
+                            "foodname": request.json['foodname'],
+                            "price": request.json['price']}
+                else:
+                    meal = {'order_id': menu[-1]['order_id'] + 1,
+                            "foodname": request.json['foodname'],
+                            "price": request.json['price']}
 
-            menu.append(meal)
+                menu.append(meal)
 
-            return 'Meal added', 201
+                return 'Meal added', 201
 
-        return 'Meal is already in the menu', 400
+            return 'Meal is already in the menu', 400
+
+        if not menu:
+            return 'No meals have been added to the menu'
+        return jsonify(menu)
 
     return app
