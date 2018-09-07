@@ -1,5 +1,5 @@
 """__init__"""
-from flask import Flask, jsonify, request
+from flask import Flask
 
 
 def create_app():
@@ -34,5 +34,15 @@ def create_app():
             return 'No orders yet'
 
         return jsonify({'Orders': new_order})
+
+    orders = OrderFood().get_all_orders()
+
+    @app.route('/api/V1/orders/<int:orderid>', methods=['GET'])
+    def get_specific_order(orderid):
+        ids = [order for order in orders if order["order_id"] == orderid]
+        if not ids:
+            return "The order was not found", 404
+
+        return jsonify({"Order": ids})
 
     return app
