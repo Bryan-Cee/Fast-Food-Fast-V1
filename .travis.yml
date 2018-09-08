@@ -7,7 +7,7 @@
   - pip install pytest-cov
   
  before_script:
- - cd tests
+  - cd tests
   - python -m pytest test_endpoints.py --cov=app
   - cd -
   
