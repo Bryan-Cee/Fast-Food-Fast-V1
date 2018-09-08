@@ -4,11 +4,11 @@ from flask import Flask, request, jsonify
 
 def create_app():
     """Starts the application"""
-    from app.models import OrderFood
 
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_pyfile('config.py')
 
+    from app.models import OrderFood
     new_order = OrderFood().get_all_orders()
     menu = OrderFood().current_menu()
 
