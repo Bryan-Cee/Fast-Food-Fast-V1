@@ -6,7 +6,7 @@
   - pip install coveralls
   - pip install pytest-cov  
 script:
-  - py.test coveralls/test_endpoints.py --doctest-modules --pep8 coveralls -v --cov coveralls --cov-report term-missing
+  - py.test coveralls/./tests/test_endpoints.py --doctest-modules --pep8 coveralls -v --cov coveralls --cov-report term-missing
 after_success:
   - coveralls
 
