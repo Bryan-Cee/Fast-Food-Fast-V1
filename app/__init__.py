@@ -12,6 +12,10 @@ def create_app():
     new_order = OrderFood().get_all_orders()
     menu = OrderFood().current_menu()
 
+    @app.route('/', methods=['GET'])
+    def hello():
+        return 'Welcome to Fast Food Fast'
+        
     @app.route('/api/V1/orders', methods=['GET', 'POST'])
     def get_all_orders():
         if request.method == 'POST':
