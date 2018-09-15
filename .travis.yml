@@ -7,6 +7,5 @@
   - pip install pytest-cov
  script:
   - python -m pytest ./tests/test_endpoints.py --cov=app
-  - codeclimate-test-reporter --file .coverage
   after_success:
   - coveralls
