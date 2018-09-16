@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/Bryan-Cee/Fast-Food-Fast-V1.svg?branch=master)](https://travis-ci.org/Bryan-Cee/Fast-Food-Fast-V1) [![Coverage Status](https://coveralls.io/repos/github/Bryan-Cee/Fast-Food-Fast-V1/badge.svg)](https://coveralls.io/github/Bryan-Cee/Fast-Food-Fast-V1) [![Maintainability](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/maintainability)](https://codeclimate.com/github/codeclimate/codeclimate/maintainability)
+[![Build Status](https://travis-ci.org/Bryan-Cee/Fast-Food-Fast-V1.svg?branch=master)](https://travis-ci.org/Bryan-Cee/Fast-Food-Fast-V1) [![Coverage Status](https://coveralls.io/repos/github/Bryan-Cee/Fast-Food-Fast-V1/badge.svg)](https://coveralls.io/github/Bryan-Cee/Fast-Food-Fast-V1) [![Maintainability](https://api.codeclimate.com/v1/badges/515632750db64aa8bf45/maintainability)](https://codeclimate.com/github/Bryan-Cee/Fast-Food-Fast-V1/maintainability)
 
 # Fast-Food-Fast-V1
 Fast-Food-Fast is a food delivery service app for a restaurant.
