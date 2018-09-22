@@ -7,9 +7,11 @@ class TestEndpoints(unittest.TestCase):
         from app import create_app
         self.app = create_app()
         self.client = self.app.test_client()
+        self.app_context = self.app.app_context()
+        self.app_context.push()
 
     def test_entry(self):
-        res = self.client.get("/")
+        res = self.client.get("/api/V1/")
         self.assertEqual(200, res.status_code)
 
     def test_get_all_orders(self):
