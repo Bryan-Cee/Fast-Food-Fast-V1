@@ -87,7 +87,7 @@ class TestEndpoints(unittest.TestCase):
         self.assertEqual(200, res.status_code)
 
         res = self.client.post(
-            "/api/V1/menu", json={'foodname': 'Pizza', 'price': '$4.99'})
+            "/api/V1/menu", json={'foodname': 'Baggels', 'price': '$4.99'})
         self.assertEqual(201, res.status_code)
         res = self.client.get("/api/V1/menu")
         self.assertEqual(200, res.status_code)
