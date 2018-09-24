@@ -17,7 +17,6 @@ class TestEndpoints(unittest.TestCase):
     def test_get_all_orders(self):
         res = self.client.get("/api/V1/orders")
         self.assertEqual(res.status_code, 200)
-        self.assertEqual('No orders yet', res.get_data(as_text=True))
 
         with self.app.test_request_context():
             self.client.post(
@@ -86,8 +85,6 @@ class TestEndpoints(unittest.TestCase):
     def test_get_menu(self):
         res = self.client.get("/api/V1/menu")
         self.assertEqual(200, res.status_code)
-        self.assertEqual('No meals have been added to the menu',
-                         res.get_data(as_text=True))
 
         res = self.client.post(
             "/api/V1/menu", json={'foodname': 'Pizza', 'price': '$4.99'})
