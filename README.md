@@ -46,3 +46,12 @@ Here is a list of all endpoints
  ## Heroku
  https://immense-ocean-82555.herokuapp.com
  
+ ## Running pylint
+ - Install pylint
+```
+$ pip install pylint
+```
+ - Run it against a file you want to check
+```
+$ pylint filename.py
+```  
