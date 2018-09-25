@@ -1,18 +1,18 @@
 from flask import Blueprint, request, jsonify
-from app.api.V1.models import OrderFood
+from app.api.v1.models import OrderFood
 
-V1 = Blueprint('V1', __name__, url_prefix='/api/V1')
+v1 = Blueprint('v1', __name__, url_prefix='/api/v1')
 
 new_order = OrderFood().get_all_orders()
 menu = OrderFood().current_menu()
 
 
-@V1.route('/', methods=['GET'])
+@v1.route('/', methods=['GET'])
 def hello():
     return 'Welcome to Fast Food Fast', 200
 
 
-@V1.route('/orders', methods=['GET', 'POST'])
+@v1.route('/orders', methods=['GET', 'POST'])
 def get_all_orders():
     if request.method == 'POST':
         if not new_order:
@@ -35,7 +35,7 @@ def get_all_orders():
     return jsonify({'Orders': new_order})
 
 
-@V1.route('/orders/<int:orderid>', methods=['GET', 'PUT'])
+@v1.route('/orders/<int:orderid>', methods=['GET', 'PUT'])
 def get_specific_order(orderid):
     ids = [order for order in new_order if order["order_id"] == orderid]
     if not ids:
@@ -48,7 +48,7 @@ def get_specific_order(orderid):
     return jsonify({"Order": ids})
 
 
-@V1.route("/menu", methods=['POST', 'GET'])
+@v1.route("/menu", methods=['POST', 'GET'])
 def add_meal_to_menu():
     if request.method == 'POST':
         mealname = [meal[key] for meal in menu for key in meal.keys() if key == 'foodname']
