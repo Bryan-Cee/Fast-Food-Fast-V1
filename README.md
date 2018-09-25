@@ -23,7 +23,7 @@ $ export FLASK_ENV=development
 ```
 - Run the development server
 ```
-$ python flask run
+$ flask run
 ```
 - Navigate to [http://localhost:5000](http://localhost:5000)
 
