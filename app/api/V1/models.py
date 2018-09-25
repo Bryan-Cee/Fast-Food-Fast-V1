@@ -15,5 +15,3 @@ class OrderFood:
     def current_menu(self):
         """Create a new list to store the menu items"""
         return self.menu
-
-

@@ -7,6 +7,6 @@ def create_app():
    
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_pyfile('config.py')
-    from app.api.v1.views import v1
-    app.register_blueprint(v1)
+    from app.api.v1.views import V1
+    app.register_blueprint(V1)
     return app
