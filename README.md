@@ -12,11 +12,14 @@ Fast-Food-Fast is a food delivery service app for a restaurant.
  $ virtualenv --no-site-packages env
  $ cd env/sripts/activate
  ```
-- Install the dependencies `$ pip install -r requirements.txt`
+- Install the dependencies
+ ```
+ $ pip install -r requirements.txt
+ ```
 - Initialize environment variables
 ``` 
-$ FLASK_APP=run.py
-$ FLASK_ENV=development
+$ export FLASK_APP=run.py
+$ export FLASK_ENV=development
 ```
 - Run the development server
 ```
@@ -31,11 +34,15 @@ $ python flask run
 
 Here is a list of all endpoints
 
-Endpoint | Functionality 
------------- | -------------
-GET   /api/v1/orders | Get all orders
-GET   /api/v1/orders/<orderid> | Fetch a specific order
-POST   /api/v1/orders | Place a new order
-PUT   /api/v1/orders/<orderid> | Update the status of an order
-POST   /api/v1/menu | Create a meal in the menu
-GET   /api/v1/menu | Get all meals in the menu
+| Endpoint                       | Functionality                 |
+| ------------------------------ | ----------------------------- |
+| GET   /api/v1/orders           | Get all orders                |
+| GET   /api/v1/orders/orderid | Fetch a specific order        |
+| POST   /api/v1/orders          | Place a new order             |
+| PUT   /api/v1/orders/orderid | Update the status of an order |
+| POST   /api/v1/menu            | Create a meal in the menu     |
+| GET   /api/v1/menu             | Get all meals in the menu     |
+ 
+ ## Heroku
+ https://immense-ocean-82555.herokuapp.com
+ 
