@@ -45,12 +45,17 @@ def get_specific_order(orderid):
         return "The order was not found", 404
 
     if request.method == 'PUT':
-        status = request.json["status"]
-        if status in("rejected", "accepted"):
-            ids[0]["status"] = request.json["status"]
-            return 'Order id {} has been updated'.format(ids[0]["order_id"])
+        try:
+            request.json.get('status')
+        except Exception:
+            return 'Please enter the correct form - JSON format'
 
-        return 'You can only update the status as rejected or accepted'
+        status = request.json.get('status')
+        if status in("rejected", "accepted", "completed"):
+            ids[0]["status"] = status
+            return 'Order id {} has been updated'.format(ids[0]["order_id"])
+        return 'You can only update the status as "status" : "rejected" or \
+        "status" : "accepted" or "status" : "completed"'
 
     return jsonify({"Order": ids})
 
