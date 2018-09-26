@@ -89,3 +89,4 @@ class TestDatabase:
 		FOREIGN KEY (order_id) REFERENCES Users (user_id) ON DELETE CASCADE ON UPDATE CASCADE;
 		"""
 	)
+	
