@@ -25,3 +25,10 @@ class Admin:
                             (meal_name, meal_desc, meal_price))
                 conn.commit()
                 return make_response(jsonify({"status": "Meal has been added to the menu"}))
+
+    def get_the_menu(self):
+        with self.conn as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT * FROM Menu")
+                menu = cur.fetchall()
+        return jsonify({"menu": menu})
