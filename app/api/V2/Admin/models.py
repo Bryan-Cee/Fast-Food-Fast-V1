@@ -2,6 +2,7 @@ from flask import jsonify, make_response
 import psycopg2
 import app.config as config
 
+
 class Admin:
     def __init__(self):
         self.conn = psycopg2.connect(host="localhost",
@@ -24,7 +25,7 @@ class Admin:
                 cur.execute("INSERT INTO Menu(meal_name, meal_desc, meal_price) VALUES (%s, %s, %s)",
                             (meal_name, meal_desc, meal_price))
                 conn.commit()
-                return make_response(jsonify({"status": "Meal has been added to the menu"}))
+                return make_response(jsonify({"status": "Meal has been added to the menu"}), 201)
 
     def get_the_menu(self):
         with self.conn as conn:

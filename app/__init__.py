@@ -16,4 +16,5 @@ def create_app():
 
     from app.api.V1.views import V1
     app.register_blueprint(V1)
+
     return app

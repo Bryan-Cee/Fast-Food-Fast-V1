@@ -6,7 +6,7 @@ admin_bp = Blueprint('admin', __name__, url_prefix='/api/v2')
 
 
 @admin_bp.route('/menu', methods=['GET', 'POST'])
-def get_all_users():
+def get_menu():
     if request.method == 'POST':
         data = request.get_json()
         meal_name = data.get('meal_name')
