@@ -102,8 +102,10 @@ class InitDB:
 
     @staticmethod
     def create_tables():
-        conn = psycopg2.connect(host="localhost", database="fastfood",
-                                user="BryanCee", password="Bellacee34")
+        conn = psycopg2.connect(host="localhost",
+                        database=config.DBNAME,
+                        user=config.USER,
+                        password=config.PASSWORD)
         cur = conn.cursor()
         create_tables = Default().commands
         for command in create_tables:
