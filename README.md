@@ -51,7 +51,7 @@ Here is a list of all endpoints
 ```
 $ pip install pylint
 ```
- - Run it against a file you want to check
+ - Run the command with the filename as shown below
 ```
 $ pylint filename.py
 ```  
