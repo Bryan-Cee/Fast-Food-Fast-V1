@@ -97,13 +97,16 @@ class TestDatabase:
 
 
 class InitDB:
-    def __init__(self):
-        pass
+    def __init__(self, config):
+        self.dbame = config.get('DBNAME')
+        self.user = config.get('USER')
+        self.password = config.get('PASSWORD')
 
-    @staticmethod
-    def create_tables():
-        conn = psycopg2.connect(host="localhost", database="fastfood",
-                                user="BryanCee", password="Bellacee34")
+    def create_tables(self):
+        conn = psycopg2.connect(host="localhost",
+                                database=self.dbame,
+                                user=self.user,
+                                password=self.password)
         cur = conn.cursor()
         create_tables = Default().commands
         for command in create_tables:
