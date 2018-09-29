@@ -1,11 +1,13 @@
 import datetime
-
+import os
 import jwt
 import psycopg2
 from flask import Blueprint, request, make_response, jsonify
 from werkzeug.security import check_password_hash, generate_password_hash
+from instance.config import app_configs
 
-import app.config as config
+env = os.getenv('APP_SETTINGS')
+config = app_configs[env]
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/api/v2/auth')
 

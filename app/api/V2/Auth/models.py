@@ -1,6 +1,12 @@
+import os
+
 import psycopg2
-from flask import make_response, jsonify, app
-import app.config as config
+from flask import make_response, jsonify
+
+from instance.config import app_configs
+
+env = os.getenv('APP_SETTINGS')
+config = app_configs[env]
 
 
 class Auth:
