@@ -53,6 +53,10 @@ class TestEndpoints(unittest.TestCase):
                                   json={'status': 'accepted'})
             self.assertEqual("The order was not found",
                              res.get_data(as_text=True))
+            res = self.client.put("/api/v1/orders/1")
+            self.assertEquals("Please enter the correct form - JSON format", res.get_data(as_text=True))
+            res = self.client.put("/api/v1/orders/1", json={"status": "new"})
+            self.assertEqual(401, res.status_code)
 
     def test_adding_meal_to_menu(self):
         res = self.client.post(
