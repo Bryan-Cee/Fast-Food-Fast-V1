@@ -1,10 +1,10 @@
 import unittest
-from app import create_app
 
 
 class TestEndpoints(unittest.TestCase):
 
     def setUp(self):
+        from app import create_app
         self.app = create_app()
         self.client = self.app.test_client()
         self.app_context = self.app.app_context()
