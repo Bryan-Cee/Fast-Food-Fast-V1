@@ -35,4 +35,6 @@ class Admin:
             with conn.cursor() as cur:
                 cur.execute("SELECT * FROM Menu")
                 menu = cur.fetchall()
+                if not menu:
+                    menu = 'There is no meal in the menu at the moment'
         return jsonify({"menu": menu})

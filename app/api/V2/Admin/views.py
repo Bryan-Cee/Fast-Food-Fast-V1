@@ -20,3 +20,4 @@ def get_menu(current_user):
 
     return Admin().get_the_menu()
 
+
