@@ -19,7 +19,7 @@ class Default:
         CREATE TABLE IF NOT EXISTS  Orders (
             order_id serial NOT NULL PRIMARY KEY,
             meal_id int NOT NULL,
-            time_of_order time NOT NULL,
+            time_of_order timestamp NOT NULL,
             user_id int NOT NULL,
             order_status varchar(20) DEFAULT 'new order' NOT NULL
         );
