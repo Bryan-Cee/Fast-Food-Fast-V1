@@ -6,10 +6,9 @@ def create_app():
     """Starts the application"""
    
     app = Flask(__name__, instance_relative_config=True)
-    app.config.from_pyfile('config.py')
-
+    app.config.from_object(app_configs[os.getenv('APP_SETTINGS')])
     from .api.V2.database import InitDB
-    InitDB.create_tables()
+    InitDB(app.config).create_tables()
     
     from app.api.V2.Admin.views import admin_bp
     app.register_blueprint(admin_bp)
