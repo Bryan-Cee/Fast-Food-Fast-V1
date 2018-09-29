@@ -1,5 +1,7 @@
 import psycopg2
 
+from app import config
+
 
 class Default:
     """Initialize the tables in the database"""
