@@ -1,14 +1,17 @@
 from flask import jsonify, make_response
 import psycopg2
-import app.config as config
+from instance.config import app_configs
+import os
+
+env = app_configs[os.getenv('APP_SETTINGS')]
 
 
 class Admin:
     def __init__(self):
         self.conn = psycopg2.connect(host="localhost",
-                                     database=config.DBNAME,
-                                     user=config.USER,
-                                     password=config.PASSWORD)
+                                     database=env.DBNAME,
+                                     user=env.USER,
+                                     password=env.PASSWORD)
 
     def add_to_menu(self, meal_name, meal_desc, meal_price):
         with self.conn as conn:
