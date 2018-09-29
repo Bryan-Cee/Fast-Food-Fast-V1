@@ -19,6 +19,29 @@ class TestAuth(MainTestCase):
 		res = self.client.post('/api/v2/auth/signup', json={'username': '', 'password': ''})
 		self.assertEqual(b'Invalid, no user name or password', res.data)
 
+	def test_login_wrong_password(self):
+		self.client.post('/api/v2/auth/signup', json={'username': 'BryanCee', 'password': '123456'})
+		h = Headers()
+		user = base64.b64encode(bytes('BryanCee:12345', 'UTF-8')).decode('UTF-8')
+		h.add('Authorization', 'Basic ' + user)
+		res = self.client.post('/api/v2/auth/login', headers=h)
+		self.assertEqual(b'wrong password', res.data)
+
+	def test_login_no_authorization(self):
+		self.client.post('/api/v2/auth/signup', json={'username': 'BryanCee', 'password': '123456'})
+		h = Headers()
+		user = base64.b64encode(bytes('BryanCee:', 'UTF-8')).decode('UTF-8')
+		h.add('Authorization', 'Basic ' + user)
+		res = self.client.post('/api/v2/auth/login', headers=h)
+		self.assertEqual(b'Could not verify, please input all your credentials', res.data)
+
+	def test_no_user(self):
+		h = Headers()
+		user = base64.b64encode(bytes('BryanCee:123456', 'UTF-8')).decode('UTF-8')
+		h.add('Authorization', 'Basic ' + user)
+		res = self.client.post('/api/v2/auth/login', headers=h)
+		self.assertEqual(b'Could not verify, please check your username or password', res.data)
+
 	def test_login(self):
 		self.client.post('/api/v2/auth/signup', json={'username': 'BryanCee', 'password': '123456'})
 		h = Headers()
