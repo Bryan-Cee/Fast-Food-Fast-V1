@@ -17,4 +17,3 @@ class TestAddMealToMenu(MainTestCase):
 	def test_get_menu(self):
 		res = self.client.get('/api/v2/menu')
 		self.assertEqual(200, res.status_code)
-
