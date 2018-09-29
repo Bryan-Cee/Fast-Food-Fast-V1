@@ -5,6 +5,7 @@ class Default:
     """Base configuration."""
     DEBUG = False
     DBNAME = os.getenv('DBNAME')
+    USER = os.getenv('USER')
     PASSWORD = os.getenv('PASSWORD')
     SECRET_KEY = os.getenv('SECRET_KEY', 'secret_key')
 
