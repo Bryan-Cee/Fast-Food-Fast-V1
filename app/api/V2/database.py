@@ -1,7 +1,5 @@
 import psycopg2
 
-from app import config
-
 
 class Default:
     """Initialize the tables in the database"""
@@ -52,15 +50,16 @@ class Default:
 
 
 class InitDB:
-    def __init__(self):
-        pass
+    def __init__(self, config):
+        self.dbame = config.get('DBNAME')
+        self.user = config.get('USER')
+        self.password = config.get('PASSWORD')
 
-    @staticmethod
-    def create_tables():
+    def create_tables(self):
         conn = psycopg2.connect(host="localhost",
-                                database=config.DBNAME,
-                                user=config.USER,
-                                password=config.PASSWORD)
+                                database=self.dbame,
+                                user=self.user,
+                                password=self.password)
         cur = conn.cursor()
         create_tables = Default().commands
         for command in create_tables:
