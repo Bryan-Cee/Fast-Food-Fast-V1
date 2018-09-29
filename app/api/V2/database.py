@@ -48,6 +48,21 @@ class Default:
         """
     )
 
+    drop = (
+        """
+        DROP TABLE IF EXISTS Users CASCADE;
+        """
+        ,
+        """
+        DROP TABLE IF EXISTS Orders CASCADE;
+        """
+        ,
+        """
+        DROP TABLE IF EXISTS Menu CASCADE;
+        """
+
+    )
+
 
 class InitDB:
     def __init__(self, config):
@@ -57,13 +72,13 @@ class InitDB:
 
     def create_tables(self):
         conn = psycopg2.connect(host="localhost",
-                                database=self.dbame,
-                                user=self.user,
-                                password=self.password)
-        cur = conn.cursor()
-        create_tables = Default().commands
-        for command in create_tables:
-            cur.execute(command)
-        conn.commit()
-        cur.close()
+                                     database=self.dbame,
+                                     user=self.user,
+                                     password=self.password)
+        with conn:
+            with conn.cursor() as cur:
+                create_tables = Default().commands
+                for command in create_tables:
+                    cur.execute(command)
+                conn.commit()
         conn.close()
