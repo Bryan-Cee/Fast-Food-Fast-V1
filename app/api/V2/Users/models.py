@@ -52,6 +52,5 @@ def get_history(user_id):
                 meal = ast.literal_eval(meal)
                 meal['time_of_order'] = meal['time_of_order']['__value__']
                 user_history.append(meal)
-                print(user_history)
 
             return make_response(jsonify({"User_History": user_history}))
