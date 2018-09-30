@@ -6,3 +6,4 @@ MarkupSafe==1.0
 Werkzeug==0.14.1
 psycopg2-binary==2.7.5
 PyJWT==1.6.4
+jsonplus==0.8.0
