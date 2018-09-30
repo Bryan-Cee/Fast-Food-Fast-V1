@@ -26,8 +26,8 @@ def user_login():
     admin = data.get('Admin')
     if not admin:
         admin = False
-        hashed_pwd = generate_password_hash(data['password'], method='sha256')
-        return Auth().create_user(username, hashed_pwd, admin)
+    hashed_pwd = generate_password_hash(data['password'], method='sha256')
+    return Auth().create_user(username, hashed_pwd, admin)
 
 
 @auth_bp.route('/login', methods=['POST'])
