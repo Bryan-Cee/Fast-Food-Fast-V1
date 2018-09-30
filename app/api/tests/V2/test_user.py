@@ -40,14 +40,10 @@ class TestUser(MainTestCase):
         res = self.client.post('/api/v2/users/orders',
                                headers={'x-access-token': final_token},
                                json={"meal_id": 1})
-        wrong_res = self.client.post('/api/v2/users/orders',
-                                     headers={'x-access-token': final_token},
-                                     json={"meal_id": 2})
+        self.assertIn('Order has been received', res.get_data(as_text=True))
         no_id_res = self.client.post('/api/v2/users/orders',
                                      headers={'x-access-token': final_token},
                                      json={})
-        self.assertEqual('Order has been received', res.get_data(as_text=True))
-        self.assertEqual('The meal does not exists in the menu', wrong_res.get_data(as_text=True))
         self.assertEqual('Please enter the correct format of keys', no_id_res.get_data(as_text=True))
 
     def test_get_user_history(self):
