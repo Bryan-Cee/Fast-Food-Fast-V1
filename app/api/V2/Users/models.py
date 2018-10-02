@@ -1,15 +1,11 @@
 import os
-import datetime
-
 import psycopg2
-import jsonplus as json
-import ast
 from flask import make_response, jsonify
-
+import ast
+import jsonplus as json
 from instance.config import app_configs
 
-env = os.getenv('APP_SETTINGS')
-config = app_configs[env]
+config = app_configs[os.getenv('APP_SETTINGS')]
 
 conn = psycopg2.connect(host="localhost",
                         database=config.DBNAME,
@@ -32,7 +28,6 @@ def place_order(meal_id, user_id, time):
                 conn.commit()
     return "Order has been received"
 
- 
 def get_history(user_id):
     with conn:
         with conn.cursor() as cur:
@@ -46,7 +41,7 @@ def get_history(user_id):
 
             for meal_order in history:
                 meal = json.dumps({'order_id': meal_order[0],
-                                   'meal_id': meal_order[1],
+                                   'meal_name': meal_order[1],
                                    'meal_desc': meal_order[2],
                                    'meal_price': meal_order[3],
                                    'order_status': meal_order[4],

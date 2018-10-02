@@ -121,3 +121,4 @@ class TestUser(MainTestCase):
         res = self.client.get('/api/v2/users/orders',
                               headers={'x-access-token': token})
         self.assertEqual("Token has expired Please login again", res.get_data(as_text=True))
+

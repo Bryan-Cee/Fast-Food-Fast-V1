@@ -20,3 +20,19 @@ def get_menu(current_user):
         return Admin().add_to_menu(meal_name, meal_desc, meal_price)
 
     return Admin().get_the_menu()
+
+  
+@admin_bp.route('/orders/', methods=['GET'])
+@token_require
+def view_orders(current_user):
+    if not current_user[1]:
+        return jsonify({"Failed": "You are not an administrator"})
+    return Admin().all_orders()
+
+
+@admin_bp.route('/orders/<order_id>', methods=['GET'])
+@token_require
+def view_specific_order(current_user, order_id):
+    if not current_user[1]:
+        return jsonify({"Failed": "You are not an administrator"})
+    return Admin().get_user_orders(order_id)

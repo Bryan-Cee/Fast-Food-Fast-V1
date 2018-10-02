@@ -3,6 +3,7 @@ import datetime
 
 from app.api.V2.Auth.helper import token_require
 
+
 user = Blueprint('users', __name__, url_prefix='/api/v2')
 
 
