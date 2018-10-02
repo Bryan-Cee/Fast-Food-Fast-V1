@@ -78,7 +78,7 @@ class Admin:
                 history = cur.fetchall()
                 if not history:
                     return make_response(jsonify({'status': 'There is no order with that ID'}))
-                order = []
+                order_history = []
 
                 for order in history:
                     meal = json.dumps({'order_id': order[0],
@@ -90,9 +90,9 @@ class Admin:
                                        'time_of_order': order[6]})
                     meal = ast.literal_eval(meal)
                     meal['time_of_order'] = meal['time_of_order']['__value__']
-                    order.append(meal)
+                    order_history.append(meal)
 
-                return make_response(jsonify({"The order": order}))
+                return make_response(jsonify({"The order": order_history}))
 
     def modify_order(self, order_id, status):
         with self.conn as conn:
