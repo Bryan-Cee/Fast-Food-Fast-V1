@@ -2,7 +2,6 @@ import os
 import datetime
 
 import psycopg2
-import psycopg2.extras
 import jsonplus as json
 import ast
 from flask import make_response, jsonify
@@ -33,7 +32,7 @@ def place_order(meal_id, user_id, time):
                 conn.commit()
     return "Order has been received"
 
-
+ 
 def get_history(user_id):
     with conn:
         with conn.cursor() as cur:

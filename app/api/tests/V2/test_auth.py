@@ -48,7 +48,7 @@ class TestAuth(MainTestCase):
         res = self.client.post('/api/v2/auth/login',
                                headers={'Authorization': 'Basic ' + user})
         self.assertIn(b'Could not verify, user is not registred', res.data)
-
+        
     def test_login_wrong_authorization_info(self):
       self.client.post('/api/v2/auth/signup',
                        json={'username': 'BryanCee',
