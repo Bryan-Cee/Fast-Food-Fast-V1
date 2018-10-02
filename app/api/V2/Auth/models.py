@@ -18,14 +18,17 @@ class Auth:
                                      user=config.USER,
                                      password=config.PASSWORD)
 
-    def create_user(self, username, password, admin):
+    def create_user(self, username, password):
         with self.conn as conn:
             with conn.cursor() as cur:
                 cur.execute("SELECT username FROM Users WHERE username = %s", (username,))
                 checks = cur.fetchone()
                 if not username or not password:
                     conn.rollback()
-                    return make_response('Invalid, no user name or password')
+                    prompt = ('Invalid entry: please enter the correct JSON format - '
+                              '"username":"your_username", '
+                              '"password":"your_password"')
+                    return make_response(prompt)
                 if checks is not None:
                     conn.rollback()
                     return 'The username has already been taken please try another'
@@ -37,7 +40,7 @@ class Auth:
                     conn.rollback()
                     return make_response(result)
                 hashed_pwd = generate_password_hash(password, method='sha256')
-                cur.execute("INSERT INTO Users(username, password, admin) VALUES (%s, %s, %s)",
-                            (username, hashed_pwd, admin))
+                cur.execute("INSERT INTO Users(username, password) VALUES (%s, %s)",
+                            (username, hashed_pwd))
                 conn.commit()
         return make_response(jsonify({"status": "Success", "message": "User has been registered you can login"}), 201)

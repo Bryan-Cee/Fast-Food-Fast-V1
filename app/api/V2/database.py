@@ -1,4 +1,6 @@
+import os
 import psycopg2
+from werkzeug.security import generate_password_hash
 
 
 class Default:
@@ -71,6 +73,8 @@ class InitDB:
         self.password = config.get('PASSWORD')
 
     def create_tables(self):
+        password = os.getenv('ADMIN_PASSWORD')
+        hashed_pwd = generate_password_hash(password, method='sha256')
         conn = psycopg2.connect(host="localhost",
                                      database=self.dbame,
                                      user=self.user,
@@ -80,5 +84,7 @@ class InitDB:
                 create_tables = Default().commands
                 for command in create_tables:
                     cur.execute(command)
+                cur.execute("INSERT INTO Users(username, password ,admin) "
+                            "VALUES ('Admin', %s, TRUE )", (hashed_pwd,))
                 conn.commit()
         conn.close()

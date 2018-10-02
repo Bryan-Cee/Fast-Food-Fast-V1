@@ -24,10 +24,8 @@ def user_login():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
-    admin = data.get('Admin')
-    if not admin:
-        admin = False
-    return Auth().create_user(username, password, admin)
+
+    return Auth().create_user(username, password)
 
 
 @auth_bp.route('/login', methods=['POST'])
