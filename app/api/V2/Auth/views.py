@@ -4,7 +4,7 @@ import jwt
 import psycopg2
 
 from flask import Blueprint, request, make_response, jsonify
-from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.security import check_password_hash
 from instance.config import app_configs
 
 env = os.getenv('APP_SETTINGS')
@@ -23,11 +23,11 @@ def user_login():
     from .models import Auth
     data = request.get_json()
     username = data.get('username')
+    password = data.get('password')
     admin = data.get('Admin')
     if not admin:
         admin = False
-    hashed_pwd = generate_password_hash(data['password'], method='sha256')
-    return Auth().create_user(username, hashed_pwd, admin)
+    return Auth().create_user(username, password, admin)
 
 
 @auth_bp.route('/login', methods=['POST'])
