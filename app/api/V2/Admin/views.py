@@ -16,6 +16,8 @@ def get_menu(current_user):
         data = request.get_json()
         meal_name = data.get('meal_name')
         meal_desc = data.get('meal_desc')
+        if not meal_desc:
+            meal_desc = 'Tasty and sweet'
         meal_price = data.get('meal_price')
         return Admin().add_to_menu(meal_name, meal_desc, meal_price)
 

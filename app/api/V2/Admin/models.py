@@ -51,7 +51,7 @@ class Admin:
                     "JOIN Menu ON Menu.meal_id = Orders.meal_id;")
                 history = cur.fetchall()
                 if not history:
-                    return make_response(jsonify({'status': 'You have no history'}))
+                    return make_response('There are no orders currently')
                 user_history = []
 
                 for meal_order in history:

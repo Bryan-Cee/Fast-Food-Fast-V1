@@ -5,6 +5,7 @@ import ast
 import base64
 import jwt
 
+
 class TestUser(MainTestCase):
 
     def test_make_order_not_authenticated(self):
@@ -82,12 +83,18 @@ class TestUser(MainTestCase):
         res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
         token = res.get_data(as_text=True)
         final_token = ast.literal_eval(token.replace(" ", ""))['Token']
+        # User makes an order
         self.client.post('/api/v2/users/orders',
                          headers={'x-access-token': final_token},
                          json={"meal_id": 1})
         res = self.client.get('/api/v2/users/orders',
                               headers={'x-access-token': final_token})
         self.assertIn(b'User_History', res.get_data())
+        # User makes an invalid order
+        res = self.client.post('/api/v2/users/orders',
+                               headers={'x-access-token': final_token},
+                               json={"meal_id": 254})
+        self.assertIn(b'The meal does not exists in the menu', res.get_data())
 
     def test_view_history_without_login(self):
         token = jwt.encode({'user_id': 1,
@@ -108,7 +115,7 @@ class TestUser(MainTestCase):
                            algorithm='HS256')
 
         res = self.client.post('/api/v2/users/orders',
-                              headers={'x-access-token': token})
+                               headers={'x-access-token': token})
         self.assertEqual("Please login to order", res.get_data(as_text=True))
 
     def test_token_expired(self):
