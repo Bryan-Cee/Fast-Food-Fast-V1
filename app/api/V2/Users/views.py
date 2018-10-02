@@ -14,7 +14,6 @@ def make_order(current_user):
 		if not current_user:
 			return make_response("Please login to order")
 		user_data = request.get_json()
-
 		meal_id = user_data.get('meal_id')
 		user_id = current_user[0]
 		time = datetime.datetime.now()

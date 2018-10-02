@@ -23,7 +23,7 @@ class Default:
             meal_id int NOT NULL,
             time_of_order timestamp NOT NULL,
             user_id int NOT NULL,
-            order_status varchar(20) DEFAULT 'new order' NOT NULL
+            order_status varchar(20) DEFAULT 'new' NOT NULL
         );
         """
         ,

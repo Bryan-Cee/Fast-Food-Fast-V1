@@ -93,3 +93,12 @@ class Admin:
                     order.append(meal)
 
                 return make_response(jsonify({"The order": order}))
+
+    def modify_order(self, order_id, status):
+        with self.conn as conn:
+            with conn.cursor() as cur:
+                try:
+                    cur.execute("UPDATE orders SET order_status = %s WHERE order_id = %s", (status, order_id))
+                except Exception:
+                    return 'There is no such order'
+        return make_response('The order status has been updated')
