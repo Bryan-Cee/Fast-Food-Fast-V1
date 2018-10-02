@@ -1,6 +1,15 @@
-import psycopg2
-import app.config as config
+import os
+import datetime
 
+import psycopg2
+import jsonplus as json
+import ast
+from flask import make_response, jsonify
+
+from instance.config import app_configs
+
+env = os.getenv('APP_SETTINGS')
+config = app_configs[env]
 
 conn = psycopg2.connect(host="localhost",
                         database=config.DBNAME,
@@ -22,3 +31,28 @@ def place_order(meal_id, user_id, time):
             finally:
                 conn.commit()
     return "Order has been received"
+
+ 
+def get_history(user_id):
+    with conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT Order_id, meal_name, meal_desc, meal_price, order_status, time_of_order FROM Orders "
+                        "JOIN Menu ON Menu.meal_id = Orders.meal_id WHERE Orders.user_id = %s order by time_of_order;",
+                        (user_id,))
+            history = cur.fetchall()
+            if not history:
+                return make_response(jsonify({'status': 'You have no history'}))
+            user_history = []
+
+            for meal_order in history:
+                meal = json.dumps({'order_id': meal_order[0],
+                                   'meal_id': meal_order[1],
+                                   'meal_desc': meal_order[2],
+                                   'meal_price': meal_order[3],
+                                   'order_status': meal_order[4],
+                                   'time_of_order': meal_order[5]})
+                meal = ast.literal_eval(meal)
+                meal['time_of_order'] = meal['time_of_order']['__value__']
+                user_history.append(meal)
+
+            return make_response(jsonify({"User_History": user_history}))

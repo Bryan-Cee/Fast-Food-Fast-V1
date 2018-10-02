@@ -5,6 +5,7 @@ import os
 from flask import request, make_response
 from instance.config import app_configs
 
+
 env = app_configs[os.getenv('APP_SETTINGS')]
 
 conn = psycopg2.connect(host="localhost",
