@@ -97,8 +97,11 @@ class Admin:
     def modify_order(self, order_id, status):
         with self.conn as conn:
             with conn.cursor() as cur:
-                try:
+                    cur.execute("SELECT * FROM orders WHERE order_id= %s", (order_id,))
+                    rows = cur.fetchone()
+                    if not rows:
+                        conn.rollback()
+                        return 'There is no such order'
                     cur.execute("UPDATE orders SET order_status = %s WHERE order_id = %s", (status, order_id))
-                except Exception:
-                    return 'There is no such order'
-        return make_response('The order status has been updated')
+                    conn.commit()
+                    return "The order status has been updated"
