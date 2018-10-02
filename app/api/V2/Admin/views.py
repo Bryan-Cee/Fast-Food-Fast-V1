@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 
 from app.api.V2.Auth.helper import token_require
+
 from .models import Admin
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/api/v2')
@@ -19,5 +20,3 @@ def get_menu(current_user):
         return Admin().add_to_menu(meal_name, meal_desc, meal_price)
 
     return Admin().get_the_menu()
-
-
