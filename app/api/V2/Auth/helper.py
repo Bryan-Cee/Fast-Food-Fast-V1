@@ -12,7 +12,6 @@ conn = psycopg2.connect(host="localhost",
                         user=env.USER,
                         password=env.PASSWORD)
 
-
 def token_require(func):
     @wraps(func)
     def decorated_func(*args, **kwargs):

@@ -7,7 +7,6 @@ from instance.config import app_configs
 
 config = app_configs[os.getenv('APP_SETTINGS')]
 
-
 conn = psycopg2.connect(host="localhost",
                         database=config.DBNAME,
                         user=config.USER,
@@ -28,7 +27,6 @@ def place_order(meal_id, user_id, time):
             finally:
                 conn.commit()
     return "Order has been received"
-
 
 def get_history(user_id):
     with conn:

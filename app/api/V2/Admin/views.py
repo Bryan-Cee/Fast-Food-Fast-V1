@@ -21,6 +21,7 @@ def get_menu(current_user):
 
     return Admin().get_the_menu()
 
+  
 @admin_bp.route('/orders/', methods=['GET'])
 @token_require
 def view_orders(current_user):

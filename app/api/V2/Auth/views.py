@@ -45,7 +45,6 @@ def login_user():
 
             if user is None:
                 return make_response('Could not verify, user is not registred', 401,
-
                                      {'WWW-Authenticate': 'Basic rearm="Login required"'})
 
             if check_password_hash(user[2], authorization.password):
