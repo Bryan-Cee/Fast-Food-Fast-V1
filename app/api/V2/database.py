@@ -10,7 +10,7 @@ class Default:
             user_id serial NOT NULL PRIMARY KEY,
             username varchar(45) NOT NULL,
             password varchar(255) NOT NULL,
-            Admin boolean DEFAULT FALSE  NOT NULL
+            Admin boolean DEFAULT False  NOT NULL
             );
         """
         ,

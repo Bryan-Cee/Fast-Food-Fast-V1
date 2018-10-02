@@ -20,6 +20,9 @@ def create_app():
     from app.api.V2.Auth.views import auth_bp
     app.register_blueprint(auth_bp)
 
+    from app.api.V2.Admin.views import admin_bp
+    app.register_blueprint(admin_bp)
+
     from app.api.V1.views import V1
     app.register_blueprint(V1)
 
