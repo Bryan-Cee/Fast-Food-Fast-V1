@@ -12,7 +12,6 @@ def create_app():
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(app_configs[os.getenv('APP_SETTINGS')])
 
-    from .api.V2.database import InitDB
     InitDB(app.config).create_tables()
     
     from app.api.V2.Admin.views import admin_bp

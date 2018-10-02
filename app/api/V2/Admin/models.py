@@ -5,6 +5,7 @@ import os
 import jsonplus as json
 import ast
 
+
 env = app_configs[os.getenv('APP_SETTINGS')]
 
 
@@ -39,7 +40,7 @@ class Admin:
                 menu = cur.fetchall()
                 if not menu:
                     menu = 'There is no meal in the menu at the moment'
-        return jsonify({"menu": menu})
+                return jsonify({"menu": menu})
 
     def all_orders(self):
         with self.conn as conn:

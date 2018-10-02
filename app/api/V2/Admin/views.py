@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 
 from app.api.V2.Auth.helper import token_require
+
 from .models import Admin
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/api/v2')
@@ -20,7 +21,6 @@ def get_menu(current_user):
 
     return Admin().get_the_menu()
 
-
 @admin_bp.route('/orders/', methods=['GET'])
 @token_require
 def view_orders(current_user):
@@ -35,4 +35,3 @@ def view_specific_order(current_user, order_id):
     if not current_user[1]:
         return jsonify({"Failed": "You are not an administrator"})
     return Admin().get_user_orders(order_id)
-
