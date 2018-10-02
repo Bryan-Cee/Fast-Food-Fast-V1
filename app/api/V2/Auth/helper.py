@@ -1,14 +1,16 @@
 import psycopg2
 from functools import wraps
 import jwt
+import os
 from flask import request, make_response
-import app.config as config
+from instance.config import app_configs
+
+env = app_configs[os.getenv('APP_SETTINGS')]
 
 conn = psycopg2.connect(host="localhost",
-                        database=config.DBNAME,
-                        user=config.USER,
-                        password=config.PASSWORD)
-
+                        database=env.DBNAME,
+                        user=env.USER,
+                        password=env.PASSWORD)
 
 def token_require(func):
     @wraps(func)

@@ -2,6 +2,7 @@ import datetime
 import os
 import jwt
 import psycopg2
+
 from flask import Blueprint, request, make_response, jsonify
 from werkzeug.security import check_password_hash, generate_password_hash
 from instance.config import app_configs
@@ -22,8 +23,8 @@ def user_login():
     from .models import Auth
     data = request.get_json()
     username = data.get('username')
-    admin = data.get('admin')
-    if admin is None:
+    admin = data.get('Admin')
+    if not admin:
         admin = False
     hashed_pwd = generate_password_hash(data['password'], method='sha256')
     return Auth().create_user(username, hashed_pwd, admin)
@@ -43,7 +44,7 @@ def login_user():
             user = cur.fetchone()
 
             if user is None:
-                return make_response('Could not verify, please check your username or password', 401,
+                return make_response('Could not verify, user is not registred', 401,
                                      {'WWW-Authenticate': 'Basic rearm="Login required"'})
 
             if check_password_hash(user[2], authorization.password):

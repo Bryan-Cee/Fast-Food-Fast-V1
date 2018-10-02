@@ -48,7 +48,10 @@ class TestEndpoints(unittest.TestCase):
             self.client.put("/api/v1/orders/1", json={'status': 'accepted'})
             res = self.client.get("/api/v1/orders/1")
             self.assertIn("accepted", res.get_data(as_text=True))
-
+            res = self.client.put("/api/v1/orders/1", json={'status': 'something'})
+            self.assertIn('You can only update the status as "status" : "rejected"', res.get_data(as_text=True))
+            res = self.client.put("/api/v1/orders/1")
+            self.assertEqual('Please enter the correct form - JSON format', res.get_data(as_text=True))
             res = self.client.put("/api/v1/orders/0",
                                   json={'status': 'accepted'})
             self.assertEqual("The order was not found",
