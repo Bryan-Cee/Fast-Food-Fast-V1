@@ -1,10 +1,12 @@
+"""Test authentication"""
 import base64
 from .base import MainTestCase
 
 
 class TestAuth(MainTestCase):
-
+    """Tests for all authentication features"""
     def test_create_account(self):
+        """Test create an account"""
         res = self.client.post('/api/v2/auth/signup',
                                json={'username': 'JohnDoe',
                                      'password': 'JohnDoe12'})
@@ -12,6 +14,7 @@ class TestAuth(MainTestCase):
         self.assertEqual(201, res.status_code)
 
     def test_username_taken(self):
+        """Test creating account with a taken username"""
         self.client.post('/api/v2/auth/signup',
                          json={'username': 'JohnDoe',
                                'password': 'JohnDoe12'})
@@ -40,9 +43,11 @@ class TestAuth(MainTestCase):
         res = self.client.post('/api/v2/auth/signup',
                                json={'username': 'Bryan',
                                      'password': 'bryyane'})
-        self.assertEqual(b'Password must have atleast one lowercase one upper case and one digit', res.data)
+        self.assertEqual(b'Password must have atleast one lowercase one '
+                         b'upper case and one digit', res.data)
 
     def test_login(self):
+        """Test logging in"""
         self.client.post('/api/v2/auth/signup',
                          json={'username': 'BryanCee',
                                'password': 'Brian12'})
@@ -52,6 +57,7 @@ class TestAuth(MainTestCase):
         self.assertIn(b'Token', res.data)
 
     def test_login_wrong_password(self):
+        """Test logging in with wrong password"""
         self.client.post('/api/v2/auth/signup',
                          json={'username': 'BryanCee',
                                'password': 'Brian12'})
@@ -61,7 +67,7 @@ class TestAuth(MainTestCase):
         self.assertIn(b'wrong password', res.data)
 
     def test_login_user_not_exist(self):
-        user = base64.b64encode(bytes('BryanCee:Brian12', 'UTF-8')).decode('UTF-8')
+        user = base64.b64encode(bytes('BryanCee:123456', 'UTF-8')).decode('UTF-8')
         res = self.client.post('/api/v2/auth/login',
                                headers={'Authorization': 'Basic ' + user})
         self.assertIn(b'Could not verify, user is not registred', res.data)
@@ -69,7 +75,7 @@ class TestAuth(MainTestCase):
     def test_login_wrong_authorization_info(self):
         self.client.post('/api/v2/auth/signup',
                          json={'username': 'BryanCee',
-                               'password': 'Brian12'})
+                               'password': '123456'})
         user = base64.b64encode(bytes('BryanCee:', 'UTF-8')).decode('UTF-8')
         res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
         self.assertEqual(b'Could not verify, please input all your credentials', res.data)

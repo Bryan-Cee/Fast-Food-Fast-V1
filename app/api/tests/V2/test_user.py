@@ -1,18 +1,22 @@
+"""Tests for user"""
 import datetime
 
-from .base import MainTestCase
 import ast
 import base64
 import jwt
 
+from .base import MainTestCase
+
 
 class TestUser(MainTestCase):
-
+    """Test cases for user functionality"""
     def test_make_order_not_authenticated(self):
+        """Test making an order when not authenticated"""
         res = self.client.post('/api/v2/users/orders', json={'meal_id': 1})
         self.assertEqual('Token is missing', res.get_data(as_text=True))
 
     def test_make_valid_order(self):
+        """"Test making an order"""
         # Admin login
         user = base64.b64encode(bytes('Admin:Admin12', 'UTF-8')).decode('UTF-8')
         res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
@@ -41,9 +45,11 @@ class TestUser(MainTestCase):
         no_id_res = self.client.post('/api/v2/users/orders',
                                      headers={'x-access-token': final_token},
                                      json={})
-        self.assertEqual('Please enter the correct format of keys', no_id_res.get_data(as_text=True))
+        self.assertEqual('Please enter the correct format of keys',
+                         no_id_res.get_data(as_text=True))
 
     def test_get_user_history(self):
+        """Test getting user history"""
         self.client.post('/api/v2/auth/signup', json={'username': 'Bellacee',
                                                       'password': 'Bella12'})
         # User logs in to the account
@@ -56,6 +62,7 @@ class TestUser(MainTestCase):
         self.assertIn('You have no history', res.get_data(as_text=True))
 
     def test_get_user_history_ordered(self):
+        """Test getting user history"""
         # Admin login
         user = base64.b64encode(bytes('Admin:Admin12', 'UTF-8')).decode('UTF-8')
         res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
@@ -89,6 +96,7 @@ class TestUser(MainTestCase):
         self.assertIn(b'The meal does not exists in the menu', res.get_data())
 
     def test_view_history_without_login(self):
+        """Test viewing history without logging in"""
         token = jwt.encode({'user_id': 2,
                             'iat': datetime.datetime.now(),
                             'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=5)},
@@ -100,6 +108,7 @@ class TestUser(MainTestCase):
         self.assertEqual("Login to view order history", res.get_data(as_text=True))
 
     def test_order_meal_without_login(self):
+        """Test ordering meals without logging in"""
         token = jwt.encode({'user_id': 2,
                             'iat': datetime.datetime.now(),
                             'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=5)},
@@ -111,6 +120,7 @@ class TestUser(MainTestCase):
         self.assertEqual("Please login to order", res.get_data(as_text=True))
 
     def test_token_expired(self):
+        """Test using an expired auth - token"""
         token = jwt.encode({'user_id': 1,
                             'iat': datetime.datetime.now(),
                             'exp': datetime.datetime.utcnow() - datetime.timedelta(minutes=5)},

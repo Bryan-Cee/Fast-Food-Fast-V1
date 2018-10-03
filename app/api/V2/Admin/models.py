@@ -1,3 +1,4 @@
+
 from flask import jsonify, make_response
 import psycopg2
 from instance.config import app_configs

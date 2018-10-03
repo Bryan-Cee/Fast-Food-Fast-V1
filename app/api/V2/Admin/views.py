@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, make_response
 
-from app.api.V2.Auth.helper import token_require
+from app.api.v2.Auth.helper import token_require
 
 from .models import Admin
 

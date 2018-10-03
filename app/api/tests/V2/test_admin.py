@@ -1,3 +1,4 @@
+"""Test cases for admin functions"""
 import base64
 import ast
 
@@ -5,14 +6,16 @@ from .base import MainTestCase
 
 
 class TestAddMealToMenu(MainTestCase):
-
+    """Test class for admin"""
     def test_add_meal_token_missing(self):
+        """Test adding meal with no token"""
         res = self.client.post('/api/v2/menu', json={"meal_name": 'Pizza',
                                                      "meal_desc": 'Seasoned',
                                                      "meal_price": 7.99})
         self.assertEqual('Token is missing', res.get_data(as_text=True))
 
     def test_add_meal_admin(self):
+        """Test adding meal to the menu"""
         user = base64.b64encode(bytes('Admin:Admin12', 'UTF-8')).decode('UTF-8')
         res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
 
@@ -62,6 +65,7 @@ class TestAddMealToMenu(MainTestCase):
         self.assertIn('Please enter the correct format of keys', res.get_data(as_text=True))
 
     def test_add_meal_non_admin(self):
+        """Test normal user adding meal to the menu"""
         self.client.post('/api/v2/auth/signup', json={'username': 'BryanCee',
                                                       'password': 'Brian12'})
         user = base64.b64encode(bytes('BryanCee:Brian12', 'UTF-8')).decode('UTF-8')
@@ -112,6 +116,7 @@ class TestAddMealToMenu(MainTestCase):
         self.assertIn(b'There is no order with that ID', res.get_data())
 
     def test_get_orders_non_admin(self):
+        """Test normal user getting orders"""
         self.client.post('/api/v2/auth/signup', json={'username': 'BryanCee',
                                                       'password': 'Brian12'})
         user = base64.b64encode(bytes('BryanCee:Brian12', 'UTF-8')).decode('UTF-8')
