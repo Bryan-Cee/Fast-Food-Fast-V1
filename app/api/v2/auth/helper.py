@@ -1,8 +1,9 @@
-import psycopg2
 from functools import wraps
 import jwt
 import os
 from flask import request, make_response
+import psycopg2
+import psycopg2.extras
 from instance.config import app_configs
 
 env = app_configs[os.getenv('APP_SETTINGS')]
@@ -26,7 +27,7 @@ def token_require(func):
             data = jwt.decode(token, env.SECRET_KEY, algorithms='HS256')
             user_id = data.get('user_id')
             with conn:
-                with conn.cursor() as cur:
+                with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
                     cur.execute("SELECT user_id, admin FROM Users WHERE user_id = %s", (user_id,))
                     current_user = cur.fetchone()
         except jwt.exceptions.ExpiredSignatureError:

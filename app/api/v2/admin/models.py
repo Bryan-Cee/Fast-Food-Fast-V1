@@ -1,10 +1,9 @@
 
 from flask import jsonify, make_response
 import psycopg2
+import psycopg2.extras
 from instance.config import app_configs
 import os
-import jsonplus as json
-import ast
 
 
 admin_conn = app_configs[os.getenv('APP_SETTINGS')]
@@ -28,7 +27,6 @@ class Admin:
                 if checks is not None:
                     conn.rollback()
                     return 'The meal is already in the menu'
-
                 cur.execute("INSERT INTO Menu(meal_name, meal_desc, meal_price) VALUES (%s, %s, %s)",
                             (meal_name, meal_desc, meal_price))
                 conn.commit()
@@ -36,25 +34,16 @@ class Admin:
 
     def get_the_menu(self):
         with self.conn as conn:
-            with conn.cursor() as cur:
+            with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
                 cur.execute("SELECT * FROM Menu")
                 menu = cur.fetchall()
                 if not menu:
                     return make_response(jsonify({'status': 'There are no meals in the menu'}))
-                all_meals = []
-                for meal in menu:
-                    meal = {
-                        "meal_id": meal[0],
-                        "meal_name": meal[1],
-                        "meal_desc": meal[2],
-                        "meal_price": meal[3]
-                    }
-                    all_meals.append(meal)
-                    return jsonify({"menu": all_meals})
+                return jsonify({"menu": menu})
 
     def all_orders(self):
         with self.conn as conn:
-            with conn.cursor() as cur:
+            with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
                 cur.execute(
                     "SELECT Order_id, user_id, meal_name, meal_desc, meal_price, order_status, time_of_order "
                     "FROM Orders "
@@ -62,25 +51,11 @@ class Admin:
                 orders = cur.fetchall()
                 if not orders:
                     return make_response('There are no orders currently')
-                all_orders = []
-
-                for order in orders:
-                    time = order[6]
-                    time_of_order = time.strftime('%Y - %b - %d, %H:%M:%S')
-                    meal = {'order_id': order[0],
-                            'user_id': order[1],
-                            'meal_name': order[2],
-                            'meal_desc': order[3],
-                            'meal_price': order[4],
-                            'order_status': order[5],
-                            'time_of_order': time_of_order}
-                    all_orders.append(meal)
-
-                return make_response(jsonify({"All orders": all_orders}))
+                return make_response(jsonify({"All orders": orders}))
 
     def get_user_orders(self, order_id):
         with self.conn as conn:
-            with conn.cursor() as cur:
+            with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
                 cur.execute(
                     "SELECT order_id, user_id, meal_name, meal_desc, meal_price, order_status, time_of_order "
                     "FROM Orders "
@@ -88,21 +63,7 @@ class Admin:
                 history = cur.fetchall()
                 if not history:
                     return make_response(jsonify({'status': 'There is no order with that ID'}))
-                order_history = []
-
-                for order in history:
-                    meal = json.dumps({'order_id': order[0],
-                                       'user_id': order[1],
-                                       'meal_name': order[2],
-                                       'meal_desc': order[3],
-                                       'meal_price': order[4],
-                                       'order_status': order[5],
-                                       'time_of_order': order[6]})
-                    meal = ast.literal_eval(meal)
-                    meal['time_of_order'] = meal['time_of_order']['__value__']
-                    order_history.append(meal)
-
-                return make_response(jsonify({"The order": order_history}))
+                return make_response(jsonify({"The order": history}))
 
     def modify_order(self, order_id, status):
         with self.conn as conn:

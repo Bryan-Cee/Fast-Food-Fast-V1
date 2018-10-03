@@ -17,17 +17,13 @@ class TestUser(MainTestCase):
 
     def test_make_valid_order(self):
         """"Test making an order"""
-        # Admin login
-        user = base64.b64encode(bytes('Admin:Admin12', 'UTF-8')).decode('UTF-8')
-        res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
+        res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + self.user})
         # Admin creates a meal in the menu
         token = res.get_data(as_text=True)
         final_token = ast.literal_eval(token.replace(" ", ""))['Token']
         self.client.post('/api/v2/menu',
                          headers={'x-access-token': final_token},
-                         json={"meal_name": 'Pizza',
-                               "meal_desc": 'Seasoned',
-                               "meal_price": 7.99})
+                         json=self.correct_order)
 
         # User creates an account
         self.client.post('/api/v2/auth/signup', json={'username': 'Bellacee',
@@ -63,17 +59,13 @@ class TestUser(MainTestCase):
 
     def test_get_user_history_ordered(self):
         """Test getting user history"""
-        # Admin login
-        user = base64.b64encode(bytes('Admin:Admin12', 'UTF-8')).decode('UTF-8')
-        res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
+        res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' +self. user})
         # Admin creates a meal in the menu
         token = res.get_data(as_text=True)
         final_token = ast.literal_eval(token.replace(" ", ""))['Token']
         self.client.post('/api/v2/menu',
                          headers={'x-access-token': final_token},
-                         json={"meal_name": 'Pizza',
-                               "meal_desc": 'Seasoned',
-                               "meal_price": 7.99})
+                         json=self.correct_order)
         # User create account
         self.client.post('/api/v2/auth/signup', json={'username': 'Bellacee',
                                                       'password': 'Bella12'})

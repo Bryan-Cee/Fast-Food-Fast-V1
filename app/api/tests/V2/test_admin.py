@@ -9,15 +9,12 @@ class TestAddMealToMenu(MainTestCase):
     """Test class for admin"""
     def test_add_meal_token_missing(self):
         """Test adding meal with no token"""
-        res = self.client.post('/api/v2/menu', json={"meal_name": 'Pizza',
-                                                     "meal_desc": 'Seasoned',
-                                                     "meal_price": 7.99})
+        res = self.client.post('/api/v2/menu', json=self.correct_order)
         self.assertEqual('Token is missing', res.get_data(as_text=True))
 
     def test_add_meal_admin(self):
         """Test adding meal to the menu"""
-        user = base64.b64encode(bytes('Admin:Admin12', 'UTF-8')).decode('UTF-8')
-        res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
+        res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + self.user})
 
         token = res.get_data(as_text=True)
         final_token = ast.literal_eval(token.replace(" ", ""))['Token']
@@ -29,33 +26,25 @@ class TestAddMealToMenu(MainTestCase):
         self.assertIn('Tasty and sweet', res.get_data(as_text=True))
         res = self.client.post('/api/v2/menu',
                                headers={'x-access-token': final_token},
-                               json={"meal_name": 'Pizza',
-                                     "meal_desc": 'Seasoned',
-                                     "meal_price": 7.99})
+                               json=self.correct_order)
         self.assertIn('Meal has been added to the menu', res.get_data(as_text=True))
 
-
     def test_add_meal_twice(self):
-        user = base64.b64encode(bytes('Admin:Admin12', 'UTF-8')).decode('UTF-8')
-        res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
+        """Testing adding a meal twice"""
+        res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + self.user})
 
         token = res.get_data(as_text=True)
         final_token = ast.literal_eval(token.replace(" ", ""))['Token']
         self.client.post('/api/v2/menu',
                          headers={'x-access-token': final_token},
-                         json={"meal_name": 'Pizza',
-                               "meal_desc": 'Seasoned',
-                               "meal_price": 7.99})
+                         json=self.correct_order)
         res = self.client.post('/api/v2/menu',
                                headers={'x-access-token': final_token},
-                               json={"meal_name": 'Pizza',
-                                     "meal_desc": 'Seasoned',
-                                     "meal_price": 7.99})
+                               json=self.correct_order)
         self.assertIn('The meal is already in the menu', res.get_data(as_text=True))
 
     def test_add_meal_wrong_data(self):
-        user = base64.b64encode(bytes('Admin:Admin12', 'UTF-8')).decode('UTF-8')
-        res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
+        res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + self.user})
 
         token = res.get_data(as_text=True)
         final_token = ast.literal_eval(token.replace(" ", ""))['Token']
@@ -76,14 +65,11 @@ class TestAddMealToMenu(MainTestCase):
         final_token = ast.literal_eval(token.replace(" ", ""))['Token']
         res = self.client.post('/api/v2/menu',
                                headers={'x-access-token': final_token},
-                               json={"meal_name": 'Pizza',
-                                     "meal_desc": 'Seasoned',
-                                     "meal_price": 7.99})
+                               json=self.correct_order)
         self.assertIn('You are not an administrator', res.get_data(as_text=True))
 
     def test_get_menu(self):
-        user = base64.b64encode(bytes('Admin:Admin12', 'UTF-8')).decode('UTF-8')
-        res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
+        res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + self.user})
 
         token = res.get_data(as_text=True)
         final_token = ast.literal_eval(token.replace(" ", ""))['Token']
@@ -91,8 +77,7 @@ class TestAddMealToMenu(MainTestCase):
         self.assertIn('There are no meals in the menu', res.get_data(as_text=True))
 
     def test_getting_all_orders(self):
-        user = base64.b64encode(bytes('Admin:Admin12', 'UTF-8')).decode('UTF-8')
-        res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
+        res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + self.user})
 
         token = res.get_data(as_text=True)
         final_token = ast.literal_eval(token.replace(" ", ""))['Token']
@@ -101,9 +86,7 @@ class TestAddMealToMenu(MainTestCase):
 
         self.client.post('/api/v2/menu',
                          headers={'x-access-token': final_token},
-                         json={"meal_name": 'Pizza',
-                               "meal_desc": 'Seasoned',
-                               "meal_price": 7.99})
+                         json=self.correct_order)
         self.client.post('/api/v2/users/orders',
                          headers={'x-access-token': final_token},
                          json={"meal_id": 1})
@@ -131,15 +114,12 @@ class TestAddMealToMenu(MainTestCase):
         self.assertIn(b'You are not an administrator', res.get_data())
 
     def test_modify_order(self):
-        user = base64.b64encode(bytes('Admin:Admin12', 'UTF-8')).decode('UTF-8')
-        res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
+        res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + self.user})
         token = res.get_data(as_text=True)
         final_token = ast.literal_eval(token.replace(" ", ""))['Token']
         self.client.post('/api/v2/menu',
                          headers={'x-access-token': final_token},
-                         json={"meal_name": 'Pizza',
-                               "meal_desc": 'Seasoned',
-                               "meal_price": 7.99})
+                         json=self.correct_order)
         self.client.post('/api/v2/users/orders',
                          headers={'x-access-token': final_token},
                          json={"meal_id": 1})

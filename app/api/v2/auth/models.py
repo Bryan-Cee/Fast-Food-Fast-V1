@@ -31,14 +31,14 @@ class Auth:
                     return make_response(prompt)
                 if checks is not None:
                     conn.rollback()
-                    return 'The username has already been taken please try another'
+                    return 'The username has already been taken please try another', 409
                 result = credentials_checker(username, password)
                 messages = ('Enter only alphabetic characters for your username',
                             'Enter a password longer than 6 characters',
                             'Password must have atleast one lowercase one upper case and one digit')
                 if result in messages:
                     conn.rollback()
-                    return make_response(result)
+                    return make_response(result, 409)
                 hashed_pwd = generate_password_hash(password, method='sha256')
                 cur.execute("INSERT INTO Users(username, password) VALUES (%s, %s)",
                             (username, hashed_pwd))

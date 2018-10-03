@@ -6,6 +6,7 @@ import psycopg2
 from flask import Blueprint, request, make_response, jsonify
 from werkzeug.security import check_password_hash
 from instance.config import app_configs
+import psycopg2.extras
 
 env = os.getenv('APP_SETTINGS')
 config = app_configs[env]
@@ -37,7 +38,7 @@ def login_user():
                              {'WWW-Authenticate': 'Basic rearm="Login required"'})
 
     with conn:
-        with conn.cursor() as cur:
+        with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
             cur.execute("SELECT user_id, username, password FROM Users WHERE username = %s", (authorization.username,))
             user = cur.fetchone()
 
@@ -45,8 +46,8 @@ def login_user():
                 return make_response('Could not verify, invalid credentials', 401,
                                      {'WWW-Authenticate': 'Basic rearm="Login required"'})
 
-            if check_password_hash(user[2], authorization.password):
-                token = jwt.encode({'user_id': user[0],
+            if check_password_hash(user['password'], authorization.password):
+                token = jwt.encode({'user_id': user['user_id'],
                                     'iat': datetime.datetime.now(),
                                     'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60)},
                                    config.SECRET_KEY,
