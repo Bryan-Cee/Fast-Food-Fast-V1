@@ -12,7 +12,7 @@ admin_bp = Blueprint('admin', __name__, url_prefix='/api/v2')
 def get_menu(current_user):
     if request.method == 'POST':
         if not current_user['admin']:
-            return jsonify({"Failed": "You are not an administrator"})
+            return jsonify({"Failed": "You are not an administrator"}), 400
         data = request.get_json()
         meal_name = data.get('meal_name')
         meal_desc = data.get('meal_desc')
@@ -28,16 +28,18 @@ def get_menu(current_user):
 @token_require
 def view_orders(current_user):
     if not current_user['admin']:
-        return jsonify({"Failed": "You are not an administrator"})
+        return jsonify({"Failed": "You are not an administrator"}), 400
     return Admin().all_orders()
 
 
 @admin_bp.route('/orders/<order_id>', methods=['GET', 'PUT'])
 @token_require
 def view_specific_order(current_user, order_id):
+    if not current_user:
+        return 'Log in to view orders', 400
     if request.method == 'PUT':
         if not current_user['admin']:
-            return jsonify({"Failed": "You are not an administrator"})
+            return jsonify({"Failed": "You are not an administrator"}), 400
         data = request.get_json()
         status = data.get('status')
         if status not in ('processing', 'cancelled', 'complete'):
@@ -47,5 +49,5 @@ def view_specific_order(current_user, order_id):
             return make_response(prompt, 409)
         return Admin().modify_order(order_id, status)
     if not current_user['admin']:
-        return jsonify({"Failed": "You are not an administrator"})
+        return jsonify({"Failed": "You are not an administrator"}), 400
     return Admin().get_user_orders(order_id)

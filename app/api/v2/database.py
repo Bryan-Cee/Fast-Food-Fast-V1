@@ -11,6 +11,7 @@ class Default:
         CREATE TABLE IF NOT EXISTS Users (
             user_id serial NOT NULL PRIMARY KEY,
             username varchar(45) NOT NULL,
+            email varchar(100) NOT NULL,
             password varchar(255) NOT NULL,
             Admin boolean DEFAULT False  NOT NULL
             );
@@ -23,7 +24,8 @@ class Default:
             meal_id int NOT NULL,
             time_of_order timestamp NOT NULL,
             user_id int NOT NULL,
-            order_status varchar(20) DEFAULT 'new' NOT NULL
+            order_status varchar(20) DEFAULT 'new' NOT NULL,
+            quantity int NOT NULL
         );
         """
         ,
@@ -74,6 +76,7 @@ class InitDB:
 
     def create_tables(self):
         password = os.getenv('ADMIN_PASSWORD')
+        email = 'admin@admin.com'
         hashed_pwd = generate_password_hash(password, method='sha256')
         conn = psycopg2.connect(host="localhost",
                                      database=self.dbame,
@@ -84,7 +87,7 @@ class InitDB:
                 create_tables = Default().commands
                 for command in create_tables:
                     cur.execute(command)
-                cur.execute("INSERT INTO Users(username, password ,admin) "
-                            "VALUES ('Admin', %s, TRUE )", (hashed_pwd,))
+                cur.execute("INSERT INTO Users(username, email, password, admin) "
+                            "VALUES ('Admin', %s, %s, TRUE)", (email, hashed_pwd))
                 conn.commit()
         conn.close()

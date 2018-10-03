@@ -27,7 +27,8 @@ class TestUser(MainTestCase):
 
         # User creates an account
         self.client.post('/api/v2/auth/signup', json={'username': 'Bellacee',
-                                                      'password': 'Bella12'})
+                                                      'password': 'Bella12',
+                                                      'email': 'johndoe@gmail.com'})
         # User logs in to the account
         user = base64.b64encode(bytes('Bellacee:Bella12', 'UTF-8')).decode('UTF-8')
         res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
@@ -41,13 +42,14 @@ class TestUser(MainTestCase):
         no_id_res = self.client.post('/api/v2/users/orders',
                                      headers={'x-access-token': final_token},
                                      json={})
-        self.assertEqual('Please enter the correct format of keys',
+        self.assertEqual('Please enter the correct JSON format: "meal_id":id, "quantity":number"',
                          no_id_res.get_data(as_text=True))
 
     def test_get_user_history(self):
         """Test getting user history"""
         self.client.post('/api/v2/auth/signup', json={'username': 'Bellacee',
-                                                      'password': 'Bella12'})
+                                                      'password': 'Bella12',
+                                                      'email': 'bellacee@gmail.com'})
         # User logs in to the account
         user = base64.b64encode(bytes('Bellacee:Bella12', 'UTF-8')).decode('UTF-8')
         res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
@@ -68,7 +70,8 @@ class TestUser(MainTestCase):
                          json=self.correct_order)
         # User create account
         self.client.post('/api/v2/auth/signup', json={'username': 'Bellacee',
-                                                      'password': 'Bella12'})
+                                                      'password': 'Bella12',
+                                                      'email': 'johndoe@gmail.com'})
         # User logs in to the account
         user = base64.b64encode(bytes('Bellacee:Bella12', 'UTF-8')).decode('UTF-8')
         res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})

@@ -25,8 +25,9 @@ def user_login():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
+    email = data.get('email')
 
-    return Auth().create_user(username, password)
+    return Auth().create_user(username, password, email)
 
 
 @auth_bp.route('/login', methods=['POST'])
@@ -43,7 +44,7 @@ def login_user():
             user = cur.fetchone()
 
             if user is None:
-                return make_response('Could not verify, invalid credentials', 401,
+                return make_response('Could not verify, invalid credentials check your username or password', 401,
                                      {'WWW-Authenticate': 'Basic rearm="Login required"'})
 
             if check_password_hash(user['password'], authorization.password):
@@ -53,5 +54,5 @@ def login_user():
                                    config.SECRET_KEY,
                                    algorithm='HS256')
                 return jsonify({"Status": "Success", "Token": token.decode('UTF-8')})
-            return make_response('Could not verify, invalid credentials', 401,
+            return make_response('Could not verify, invalid credentials check your username or password', 401,
                                  {'WWW-Authenticate': 'Basic rearm="Login required"'})

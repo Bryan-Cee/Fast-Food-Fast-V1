@@ -57,7 +57,8 @@ class TestAddMealToMenu(MainTestCase):
     def test_add_meal_non_admin(self):
         """Test normal user adding meal to the menu"""
         self.client.post('/api/v2/auth/signup', json={'username': 'BryanCee',
-                                                      'password': 'Brian12'})
+                                                      'password': 'Brian12',
+                                                      'email': 'bryancee@gmail.com'})
         user = base64.b64encode(bytes('BryanCee:Brian12', 'UTF-8')).decode('UTF-8')
         res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
 
@@ -102,7 +103,8 @@ class TestAddMealToMenu(MainTestCase):
     def test_get_orders_non_admin(self):
         """Test normal user getting orders"""
         self.client.post('/api/v2/auth/signup', json={'username': 'BryanCee',
-                                                      'password': 'Brian12'})
+                                                      'password': 'Brian12',
+                                                      'email': 'bryancee@gmail.com'})
         user = base64.b64encode(bytes('BryanCee:Brian12', 'UTF-8')).decode('UTF-8')
         res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
 
@@ -140,7 +142,8 @@ class TestAddMealToMenu(MainTestCase):
 
     def test_non_admin_modify_order(self):
         self.client.post('/api/v2/auth/signup', json={'username': 'BryanCee',
-                                                      'password': 'Brian12'})
+                                                      'password': 'Brian12',
+                                                      'email': 'bryancee@gmail.com'})
         user = base64.b64encode(bytes('BryanCee:Brian12', 'UTF-8')).decode('UTF-8')
         res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
 

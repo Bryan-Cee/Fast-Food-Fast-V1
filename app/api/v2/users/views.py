@@ -12,14 +12,16 @@ user = Blueprint('users', __name__, url_prefix='/api/v2')
 def make_order(current_user):
 	if request.method == 'POST':
 		if not current_user:
-			return make_response("Please login to order")
+			return make_response("Please login to order", 400)
 		user_data = request.get_json()
 		meal_id = user_data.get('meal_id')
 		user_id = current_user['user_id']
 		time = datetime.datetime.now()
-
+		quantity = user_data.get('quantity')
+		if not quantity:
+			quantity = 1
 		from .models import place_order
-		return place_order(meal_id, user_id, time)
+		return place_order(meal_id, user_id, time, quantity)
 
 	if not current_user:
 		return make_response("Login to view order history")
