@@ -1,6 +1,6 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, make_response
 
-from app.api.V2.Auth.helper import token_require
+from app.api.v2.auth.helper import token_require
 
 from .models import Admin
 
@@ -32,9 +32,20 @@ def view_orders(current_user):
     return Admin().all_orders()
 
 
-@admin_bp.route('/orders/<order_id>', methods=['GET'])
+@admin_bp.route('/orders/<order_id>', methods=['GET', 'PUT'])
 @token_require
 def view_specific_order(current_user, order_id):
+    if request.method == 'PUT':
+        if not current_user[1]:
+            return jsonify({"Failed": "You are not an administrator"})
+        data = request.get_json()
+        status = data.get('status')
+        if status not in ('processing', 'cancelled', 'complete'):
+            prompt = ('Please enter the required status in the correct format: '
+                      '"status":"the_status" which can be "processing", "complete" '
+                      '"cancelled"')
+            return make_response(prompt)
+        return Admin().modify_order(order_id, status)
     if not current_user[1]:
         return jsonify({"Failed": "You are not an administrator"})
     return Admin().get_user_orders(order_id)

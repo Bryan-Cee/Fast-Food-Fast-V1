@@ -7,7 +7,7 @@ class Default:
     DBNAME = os.getenv('DBNAME')
     USER = os.getenv('USER')
     PASSWORD = os.getenv('PASSWORD')
-    SECRET_KEY = os.getenv('SECRET_KEY', 'secret_key')
+    SECRET_KEY = os.getenv('SECRET_KEY', 'secret')
 
 
 class DevelopmentConfig(Default):

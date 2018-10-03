@@ -24,10 +24,8 @@ def user_login():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
-    admin = data.get('Admin')
-    if not admin:
-        admin = False
-    return Auth().create_user(username, password, admin)
+
+    return Auth().create_user(username, password)
 
 
 @auth_bp.route('/login', methods=['POST'])
@@ -44,14 +42,15 @@ def login_user():
             user = cur.fetchone()
 
             if user is None:
-                return make_response('Could not verify, user is not registred', 401,
+                return make_response('Could not verify, invalid credentials', 401,
                                      {'WWW-Authenticate': 'Basic rearm="Login required"'})
 
             if check_password_hash(user[2], authorization.password):
                 token = jwt.encode({'user_id': user[0],
                                     'iat': datetime.datetime.now(),
-                                    'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=5)},
-                                   "secret_to_encoding",
+                                    'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60)},
+                                   config.SECRET_KEY,
                                    algorithm='HS256')
-                return jsonify({"Token": token.decode('UTF-8')})
-            return make_response("wrong password", 401)
+                return jsonify({"Status": "Success", "Token": token.decode('UTF-8')})
+            return make_response('Could not verify, invalid credentials', 401,
+                                 {'WWW-Authenticate': 'Basic rearm="Login required"'})

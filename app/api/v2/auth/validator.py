@@ -15,6 +15,5 @@ def credentials_checker(username, password):
     if len(password) <= 6:
         return 'Enter a password longer than 6 characters'
     if not (upper.findall(password) and low.findall(password) and num.findall(password)):
-        message = 'Password must have atleast one lowercase one upper case and one digit'
-        return message
+        return 'Password must have atleast one lowercase one upper case and one digit'
     return username, password

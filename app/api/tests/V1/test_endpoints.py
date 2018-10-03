@@ -1,9 +1,11 @@
+"""/app/api/tests/v1/test_endpoints.py"""
 import unittest
 
 
 class TestEndpoints(unittest.TestCase):
-
+    """Test for version 1 of API"""
     def setUp(self):
+        """Run the app for testing"""
         from app import create_app
         self.app = create_app()
         self.client = self.app.test_client()
@@ -11,10 +13,12 @@ class TestEndpoints(unittest.TestCase):
         self.app_context.push()
 
     def test_entry(self):
+        """Test index route"""
         res = self.client.get("/api/v1/")
         self.assertEqual(200, res.status_code)
 
     def test_get_all_orders(self):
+        """Test geting all orders"""
         res = self.client.get("/api/v1/orders")
         self.assertEqual(res.status_code, 200)
 
@@ -27,6 +31,7 @@ class TestEndpoints(unittest.TestCase):
             self.assertIn("Pizza", res.get_data(as_text=True))
 
     def test_get_specific_order(self):
+        """Test getting a specific order"""
         with self.app.test_request_context():
             self.client.post(
                 "/api/v1/menu", json={'foodname': 'Pizza', 'price': '$4.99'})
@@ -40,6 +45,7 @@ class TestEndpoints(unittest.TestCase):
                              res.get_data(as_text=True))
 
     def test_modifying_status(self):
+        """Test modifying the status of an order"""
         with self.app.test_request_context():
             self.client.post(
                 "/api/v1/menu", json={'foodname': 'Pizza', 'price': '$4.99'})
@@ -48,17 +54,19 @@ class TestEndpoints(unittest.TestCase):
             self.client.put("/api/v1/orders/1", json={'status': 'accepted'})
             res = self.client.get("/api/v1/orders/1")
             self.assertIn("accepted", res.get_data(as_text=True))
-            
             res = self.client.put("/api/v1/orders/1", json={'status': 'something'})
-            self.assertIn('You can only update the status as "status" : "rejected"', res.get_data(as_text=True))
+            self.assertIn('You can only update the status as "status" : "rejected"',
+                          res.get_data(as_text=True))
             res = self.client.put("/api/v1/orders/1")
-            self.assertEqual('Please enter the correct form - JSON format', res.get_data(as_text=True))
+            self.assertEqual('Please enter the correct form - JSON format',
+                             res.get_data(as_text=True))
             res = self.client.put("/api/v1/orders/0",
                                   json={'status': 'accepted'})
             self.assertEqual("The order was not found",
                              res.get_data(as_text=True))
 
     def test_adding_meal_to_menu(self):
+        """Test adding a meal to the menu"""
         res = self.client.post(
             "/api/v1/menu", json={'foodname': 'Pizza', 'price': '$4.99'})
         self.assertEqual(201, res.status_code)
@@ -87,6 +95,7 @@ class TestEndpoints(unittest.TestCase):
                              res.get_data(as_text=True))
 
     def test_get_menu(self):
+        """Test getting the menu"""
         res = self.client.get("/api/v1/menu")
         self.assertEqual(200, res.status_code)
 
@@ -97,6 +106,7 @@ class TestEndpoints(unittest.TestCase):
         self.assertEqual(200, res.status_code)
 
     def test_for_order(self):
+        """Test for orders route"""
         with self.app.test_request_context():
             self.client.post(
                 "/api/v1/menu", json={'foodname': 'Pizza', 'price': '$4.99'})
@@ -108,16 +118,17 @@ class TestEndpoints(unittest.TestCase):
             order = res.get_json()
             for item in order.values():
                 orders = item
-            assert orders[0]['order_id'] == 1
+            self.assertEqual(orders[0]['order_id'], 1)
 
             self.client.post("/api/v1/orders", json={'foodname': 'Burger'})
             res = self.client.get("/api/v1/menu")
             order = res.get_json()
             for item in order.values():
                 orders = item
-            assert orders[1]['order_id'] == 2
+            self.assertEqual(orders[1]['order_id'], 2)
 
             res = self.client.post(
                 "/api/v1/orders", json={'foodname': 'Hot dog'})
             self.assertEqual(
-                "Invalid order, the food you ordered is not in the menu", res.get_data(as_text=True))
+                "Invalid order, the food you ordered is not in the menu",
+                res.get_data(as_text=True))

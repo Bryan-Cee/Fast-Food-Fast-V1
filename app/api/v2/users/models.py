@@ -1,8 +1,6 @@
 import os
 import psycopg2
 from flask import make_response, jsonify
-import ast
-import jsonplus as json
 from instance.config import app_configs
 
 config = app_configs[os.getenv('APP_SETTINGS')]
@@ -24,7 +22,7 @@ def place_order(meal_id, user_id, time):
                             (meal_id, user_id, time))
             except psycopg2.IntegrityError:
                 conn.rollback()
-                return "The meal does not exists in the menu"
+                return "The meal does not exists in the menu", 404
             finally:
                 conn.commit()
     return "Order has been received"
@@ -42,14 +40,14 @@ def get_history(user_id):
             user_history = []
 
             for meal_order in history:
-                meal = json.dumps({'order_id': meal_order[0],
-                                   'meal_name': meal_order[1],
-                                   'meal_desc': meal_order[2],
-                                   'meal_price': meal_order[3],
-                                   'order_status': meal_order[4],
-                                   'time_of_order': meal_order[5]})
-                meal = ast.literal_eval(meal)
-                meal['time_of_order'] = meal['time_of_order']['__value__']
+                time = meal_order[5]
+                time_of_order = time.strftime('%Y - %b - %d, %H:%M:%S')
+                meal = {'order_id': meal_order[0],
+                        'meal_name': meal_order[1],
+                        'meal_desc': meal_order[2],
+                        'meal_price': meal_order[3],
+                        'order_status': meal_order[4],
+                        'time_of_order': time_of_order}
                 user_history.append(meal)
 
             return make_response(jsonify({"User_History": user_history}))

@@ -23,7 +23,7 @@ def token_require(func):
         if not token:
             return make_response('Token is missing', 401)
         try:
-            data = jwt.decode(token, 'secret_to_encoding', algorithms='HS256')
+            data = jwt.decode(token, env.SECRET_KEY, algorithms='HS256')
             user_id = data.get('user_id')
             with conn:
                 with conn.cursor() as cur:
