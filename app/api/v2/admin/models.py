@@ -40,8 +40,17 @@ class Admin:
                 cur.execute("SELECT * FROM Menu")
                 menu = cur.fetchall()
                 if not menu:
-                    menu = 'There is no meal in the menu at the moment'
-                return jsonify({"menu": menu})
+                    return make_response(jsonify({'status': 'There are no meals in the menu'}))
+                all_meals = []
+                for meal in menu:
+                    meal = {
+                        "meal_id": meal[0],
+                        "meal_name": meal[1],
+                        "meal_desc": meal[2],
+                        "meal_price": meal[3]
+                    }
+                    all_meals.append(meal)
+                    return jsonify({"menu": all_meals})
 
     def all_orders(self):
         with self.conn as conn:
@@ -50,24 +59,24 @@ class Admin:
                     "SELECT Order_id, user_id, meal_name, meal_desc, meal_price, order_status, time_of_order "
                     "FROM Orders "
                     "JOIN Menu ON Menu.meal_id = Orders.meal_id;")
-                history = cur.fetchall()
-                if not history:
+                orders = cur.fetchall()
+                if not orders:
                     return make_response('There are no orders currently')
-                user_history = []
+                all_orders = []
 
-                for meal_order in history:
-                    meal = json.dumps({'order_id': meal_order[0],
-                                       'user_id': meal_order[1],
-                                       'meal_name': meal_order[2],
-                                       'meal_desc': meal_order[3],
-                                       'meal_price': meal_order[4],
-                                       'order_status': meal_order[5],
-                                       'time_of_order': meal_order[6]})
-                    meal = ast.literal_eval(meal)
-                    meal['time_of_order'] = meal['time_of_order']['__value__']
-                    user_history.append(meal)
+                for order in orders:
+                    time = order[6]
+                    time_of_order = time.strftime('%Y - %b - %d, %H:%M:%S')
+                    meal = {'order_id': order[0],
+                            'user_id': order[1],
+                            'meal_name': order[2],
+                            'meal_desc': order[3],
+                            'meal_price': order[4],
+                            'order_status': order[5],
+                            'time_of_order': time_of_order}
+                    all_orders.append(meal)
 
-                return make_response(jsonify({"All orders": user_history}))
+                return make_response(jsonify({"All orders": all_orders}))
 
     def get_user_orders(self, order_id):
         with self.conn as conn:

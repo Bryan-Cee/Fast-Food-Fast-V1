@@ -21,18 +21,19 @@ class TestAddMealToMenu(MainTestCase):
 
         token = res.get_data(as_text=True)
         final_token = ast.literal_eval(token.replace(" ", ""))['Token']
-        res = self.client.post('/api/v2/menu',
-                               headers={'x-access-token': final_token},
-                               json={"meal_name": 'Pizza',
-                                     "meal_desc": 'Seasoned',
-                                     "meal_price": 7.99})
-        self.assertIn('Meal has been added to the menu', res.get_data(as_text=True))
         self.client.post('/api/v2/menu',
                          headers={'x-access-token': final_token},
                          json={"meal_name": 'Burger',
                                "meal_price": 7.99})
         res = self.client.get('/api/v2/menu', headers={'x-access-token': final_token})
         self.assertIn('Tasty and sweet', res.get_data(as_text=True))
+        res = self.client.post('/api/v2/menu',
+                               headers={'x-access-token': final_token},
+                               json={"meal_name": 'Pizza',
+                                     "meal_desc": 'Seasoned',
+                                     "meal_price": 7.99})
+        self.assertIn('Meal has been added to the menu', res.get_data(as_text=True))
+
 
     def test_add_meal_twice(self):
         user = base64.b64encode(bytes('Admin:Admin12', 'UTF-8')).decode('UTF-8')
@@ -87,7 +88,7 @@ class TestAddMealToMenu(MainTestCase):
         token = res.get_data(as_text=True)
         final_token = ast.literal_eval(token.replace(" ", ""))['Token']
         res = self.client.get('/api/v2/menu', headers={"x-access-token": final_token})
-        self.assertIn('There is no meal in the menu at the moment', res.get_data(as_text=True))
+        self.assertIn('There are no meals in the menu', res.get_data(as_text=True))
 
     def test_getting_all_orders(self):
         user = base64.b64encode(bytes('Admin:Admin12', 'UTF-8')).decode('UTF-8')

@@ -100,7 +100,7 @@ class TestUser(MainTestCase):
         token = jwt.encode({'user_id': 2,
                             'iat': datetime.datetime.now(),
                             'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=5)},
-                           "secret_to_encoding",
+                           "secret",
                            algorithm='HS256')
 
         res = self.client.get('/api/v2/users/orders',
@@ -112,7 +112,7 @@ class TestUser(MainTestCase):
         token = jwt.encode({'user_id': 2,
                             'iat': datetime.datetime.now(),
                             'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=5)},
-                           "secret_to_encoding",
+                           "secret",
                            algorithm='HS256')
 
         res = self.client.post('/api/v2/users/orders',
@@ -124,7 +124,7 @@ class TestUser(MainTestCase):
         token = jwt.encode({'user_id': 1,
                             'iat': datetime.datetime.now(),
                             'exp': datetime.datetime.utcnow() - datetime.timedelta(minutes=5)},
-                           "secret_to_encoding",
+                           "secret",
                            algorithm='HS256')
 
         res = self.client.get('/api/v2/users/orders',

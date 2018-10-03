@@ -64,13 +64,13 @@ class TestAuth(MainTestCase):
         user = base64.b64encode(bytes('BryanCee:12345', 'UTF-8')).decode('UTF-8')
         res = self.client.post('/api/v2/auth/login',
                                headers={'Authorization': 'Basic ' + user})
-        self.assertIn(b'wrong password', res.data)
+        self.assertIn(b'Could not verify, invalid credentials', res.data)
 
     def test_login_user_not_exist(self):
         user = base64.b64encode(bytes('BryanCee:123456', 'UTF-8')).decode('UTF-8')
         res = self.client.post('/api/v2/auth/login',
                                headers={'Authorization': 'Basic ' + user})
-        self.assertIn(b'Could not verify, user is not registred', res.data)
+        self.assertIn(b'Could not verify, invalid credentials', res.data)
 
     def test_login_wrong_authorization_info(self):
         self.client.post('/api/v2/auth/signup',
