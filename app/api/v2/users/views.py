@@ -1,7 +1,7 @@
 from flask import Blueprint, request, make_response
 import datetime
 
-from app.api.v2.Auth.helper import token_require
+from app.api.v2.auth.helper import token_require
 
 
 user = Blueprint('users', __name__, url_prefix='/api/v2')
@@ -23,5 +23,5 @@ def make_order(current_user):
 
 	if not current_user:
 		return make_response("Login to view order history")
-	from app.api.v2.Users.models import get_history
+	from app.api.v2.users.models import get_history
 	return get_history(current_user[0])

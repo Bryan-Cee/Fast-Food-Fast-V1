@@ -12,13 +12,13 @@ def create_app():
     app.config.from_object(app_configs[os.getenv('APP_SETTINGS')])
 
     InitDB(app.config).create_tables()
-    from app.api.v2.Admin.views import admin_bp
+    from app.api.v2.admin.views import admin_bp
     app.register_blueprint(admin_bp)
 
-    from app.api.v2.Auth.views import auth_bp
+    from app.api.v2.auth.views import auth_bp
     app.register_blueprint(auth_bp)
 
-    from app.api.v2.Users.views import user
+    from app.api.v2.users.views import user
     app.register_blueprint(user)
 
     from app.api.v1.views import V1
