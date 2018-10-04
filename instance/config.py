@@ -4,9 +4,7 @@ import os
 class Default:
     """Base configuration."""
     DEBUG = False
-    DBNAME = os.getenv('DBNAME')
-    USER = os.getenv('USER')
-    PASSWORD = os.getenv('PASSWORD')
+    DATABASE_URL = os.getenv('DATABASE_URL')
     SECRET_KEY = os.getenv('SECRET_KEY', 'secret')
 
 
@@ -19,14 +17,13 @@ class TestingConfig(Default):
     """Testing configuration."""
     DEBUG = True
     TESTING = True
-    DBNAME = os.getenv('TESTDBNAME')
+    DATABASE_URL = os.getenv('DATABASE_URL')
 
 
 class ProductionConfig(Default):
     """Production configuration."""
     DEBUG = False
-    DBNAME = os.getenv('DBNAME')
-    SECRET_KEY = 'secret_key'
+    SECRET_KEY = os.getenv('SECRET_KEY')
 
 
 app_configs = {

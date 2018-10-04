@@ -1,14 +1,13 @@
 """"app/api/tests/v2/base.py"""
 import base64
+import os
 import unittest
 import psycopg2
 from instance.config import TestingConfig
 from app.api.v2.database import Default
 from app import create_app
 
-DBNAME = TestingConfig.DBNAME
-USER = TestingConfig.USER
-PASSWORD = TestingConfig.USER
+connector = os.getenv('DATABASE_URL')
 
 
 class MainTestCase(unittest.TestCase):

@@ -5,6 +5,7 @@ from flask import make_response, jsonify
 from werkzeug.security import generate_password_hash
 from instance.config import app_configs
 from .validator import credentials_checker
+from ..users.models import conn as connection
 
 env = os.getenv('APP_SETTINGS')
 config = app_configs[env]
@@ -13,10 +14,7 @@ config = app_configs[env]
 class Auth:
 
     def __init__(self):
-        self.conn = psycopg2.connect(host="localhost",
-                                     database=config.DBNAME,
-                                     user=config.USER,
-                                     password=config.PASSWORD)
+        self.conn = connection
 
     def create_user(self, username, password, email):
         with self.conn as conn:
