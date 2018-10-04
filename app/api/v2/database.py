@@ -7,8 +7,6 @@ from instance.config import app_configs
 config = app_configs[os.getenv('APP_SETTINGS')]
 
 
-
-
 class Default:
     """Initialize the tables in the database"""
     commands = (

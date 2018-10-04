@@ -3,7 +3,6 @@ import base64
 import os
 import unittest
 import psycopg2
-from instance.config import TestingConfig
 from app.api.v2.database import Default
 from app import create_app
 
@@ -26,7 +25,7 @@ class MainTestCase(unittest.TestCase):
         self.user = base64.b64encode(bytes('Admin:Admin12', 'UTF-8')).decode('UTF-8')
 
     def tearDown(self):
-        conn = psycopg2.connect(host='localhost', database=DBNAME, user=USER, password=PASSWORD)
+        conn = psycopg2.connect(connector)
 
         with conn:
             with conn.cursor() as cur:
