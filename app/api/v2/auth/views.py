@@ -44,7 +44,7 @@ def login_user():
             user = cur.fetchone()
 
             if user is None:
-                return make_response('Could not verify, invalid credentials check your username or password', 401,
+                return make_response('Could not verify, invalid credentials check your username or password', 403,
                                      {'WWW-Authenticate': 'Basic rearm="Login required"'})
 
             if check_password_hash(user['password'], authorization.password):
