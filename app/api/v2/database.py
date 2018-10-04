@@ -1,7 +1,13 @@
 import os
 import psycopg2
 from werkzeug.security import generate_password_hash
-from .users.models import conn as connection
+
+from instance.config import app_configs
+
+config = app_configs[os.getenv('APP_SETTINGS')]
+
+connection = psycopg2.connect(config.DATABASE_URL)
+
 
 class Default:
     """Initialize the tables in the database"""
