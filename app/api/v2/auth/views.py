@@ -35,7 +35,7 @@ def login_user():
     authorization = request.authorization
 
     if not authorization or not authorization.username or not authorization.password:
-        return make_response('Could not verify, please input all your credentials', 401,
+        return make_response('Could not verify, please input all your credentials', 403,
                              {'WWW-Authenticate': 'Basic rearm="Login required"'})
 
     with conn:
@@ -54,5 +54,5 @@ def login_user():
                                    config.SECRET_KEY,
                                    algorithm='HS256')
                 return jsonify({"Status": "Success", "Token": token.decode('UTF-8')})
-            return make_response('Could not verify, invalid credentials check your username or password', 401,
+            return make_response('Could not verify, invalid credentials check your username or password', 403,
                                  {'WWW-Authenticate': 'Basic rearm="Login required"'})
