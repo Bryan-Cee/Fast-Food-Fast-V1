@@ -35,7 +35,8 @@ def login_user():
     authorization = request.authorization
 
     if not authorization or not authorization.username or not authorization.password:
-        return make_response('Could not verify, please input all your credentials', 403,
+        return make_response(jsonify({"status": "Failed",
+                                      "message": "Could not verify, please input all your credentials"}), 403,
                              {'WWW-Authenticate': 'Basic rearm="Login required"'})
 
     with conn:
@@ -44,8 +45,10 @@ def login_user():
             user = cur.fetchone()
 
             if user is None:
-                return make_response('Could not verify, invalid credentials check your username or password', 403,
-                                     {'WWW-Authenticate': 'Basic rearm="Login required"'})
+                return make_response(jsonify(
+                    {"status": "Failed",
+                     "message": "Could not verify, invalid credentials check your username or password"}), 403,
+                    {'WWW-Authenticate': 'Basic rearm="Login required"'})
 
             if check_password_hash(user['password'], authorization.password):
                 token = jwt.encode({'user_id': user['user_id'],
@@ -53,6 +56,8 @@ def login_user():
                                     'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60)},
                                    config.SECRET_KEY,
                                    algorithm='HS256')
-                return jsonify({"Status": "Success", "Token": token.decode('UTF-8')})
-            return make_response('Could not verify, invalid credentials check your username or password', 403,
+                return jsonify({"status": "Success", "Token": token.decode('UTF-8')})
+            return make_response(jsonify({
+                "status": "Failed",
+                          "message": "Could not verify, invalid credentials check your username or password"}), 403,
                                  {'WWW-Authenticate': 'Basic rearm="Login required"'})

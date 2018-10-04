@@ -23,14 +23,17 @@ class Admin:
                 checks = cur.fetchone()
                 if not meal_name or not meal_price:
                     conn.rollback()
-                    return 'Please enter the correct format of keys'
+                    return jsonify({"status": "Failed",
+                                    "message": "Please enter the correct details for a meal i.e. "
+                                               "'meal_name': 'mealname', "
+                                               "'meal_price': 'price', meal_desc': 'meal_description'"})
                 if checks is not None:
                     conn.rollback()
-                    return 'The meal is already in the menu'
+                    return make_response(jsonify({"status": "Failed", "message": "The meal is already in the menu"}), 409)
                 cur.execute("INSERT INTO Menu(meal_name, meal_desc, meal_price) VALUES (%s, %s, %s)",
                             (meal_name, meal_desc, meal_price))
                 conn.commit()
-                return make_response(jsonify({"status": "Meal has been added to the menu"}), 201)
+                return make_response(jsonify({"status": "success", "message": "Meal has been added to the menu"}), 201)
 
     def get_the_menu(self):
         with self.conn as conn:
@@ -38,7 +41,7 @@ class Admin:
                 cur.execute("SELECT * FROM Menu")
                 menu = cur.fetchall()
                 if not menu:
-                    return make_response(jsonify({'status': 'There are no meals in the menu'}))
+                    return make_response(jsonify({'status': 'success', 'message': 'There are no meals in the menu at the moment'}))
                 return jsonify({"menu": menu})
 
     def all_orders(self):
@@ -50,7 +53,7 @@ class Admin:
                     "JOIN Menu ON Menu.meal_id = Orders.meal_id;")
                 orders = cur.fetchall()
                 if not orders:
-                    return make_response('There are no orders currently')
+                    return make_response(jsonify({'status': 'failed', 'message': 'There are no orders currently'}))
                 return make_response(jsonify({"All orders": orders}))
 
     def get_user_orders(self, order_id):
@@ -62,7 +65,7 @@ class Admin:
                     "JOIN Menu ON Menu.meal_id = Orders.meal_id WHERE order_id = %s;", (order_id,))
                 history = cur.fetchall()
                 if not history:
-                    return make_response(jsonify({'status': 'There is no order with that ID'}))
+                    return make_response(jsonify({'status': 'failed', 'message': 'There is no order with that ID'}))
                 return make_response(jsonify({"The order": history}))
 
     def modify_order(self, order_id, status):
@@ -72,10 +75,10 @@ class Admin:
                     rows = cur.fetchone()
                     if not rows:
                         conn.rollback()
-                        return 'There is no such order'
+                        return make_response(jsonify({'status': 'failed', 'message': 'There is no such order'}), 404)
                     cur.execute("UPDATE orders SET order_status = %s WHERE order_id = %s", (status, order_id))
                     conn.commit()
-                    return "The order status has been updated"
+                    return make_response(jsonify({"status": "success", "message": "The order status has been updated"}), 201)
 
     def promote_user(self, admin, user_id):
         with self.conn as conn:
@@ -84,9 +87,10 @@ class Admin:
                 rows = cur.fetchone()
                 if not rows:
                     conn.rollback()
-                    return 'The user does not exist', 404
+                    return jsonify({'status': 'Failed', 'message': 'The user does not exist'}), 404
                 if not admin or admin not in ('True', 'False'):
-                    return 'Please enter the correct JSON format: "admin": "True" or "admin": "False"', 400
+                    return jsonify({"status": 'failed', 'message': 'To promote a user or demote a user set '
+                                                                   ': "admin": "True" or "admin": "False"'}), 400
                 cur.execute("UPDATE users SET admin = %s WHERE user_id = %s", (admin, user_id))
                 conn.commit()
-                return "The user admin rights have been updated", 201
+                return jsonify({"status": "success", "message": "The user admin rights have been updated"}), 201

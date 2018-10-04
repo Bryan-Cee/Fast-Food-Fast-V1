@@ -11,7 +11,7 @@ class TestAddMealToMenu(MainTestCase):
     def test_add_meal_token_missing(self):
         """Test adding meal with no token"""
         res = self.client.post('/api/v2/menu', json=self.correct_order)
-        self.assertEqual('Token is missing', res.get_data(as_text=True))
+        self.assertIn('Token is missing', res.get_data(as_text=True))
 
     def test_add_meal_admin(self):
         """Test adding meal to the menu"""
@@ -53,7 +53,7 @@ class TestAddMealToMenu(MainTestCase):
                                headers={'x-access-token': final_token},
                                json={"meal_desc": 'Seasoned',
                                      "meal_price": 7.99})
-        self.assertIn('Please enter the correct format of keys', res.get_data(as_text=True))
+        self.assertIn('Please enter the correct details for a meal', res.get_data(as_text=True))
 
     def test_add_meal_non_admin(self):
         """Test normal user adding meal to the menu"""
@@ -81,7 +81,7 @@ class TestAddMealToMenu(MainTestCase):
         token = res.get_data(as_text=True)
         final_token = ast.literal_eval(token.replace(" ", ""))['Token']
         res = self.client.get('/api/v2/orders/', headers={"x-access-token": final_token})
-        self.assertEqual(b'There are no orders currently', res.get_data())
+        self.assertIn(b'There are no orders currently', res.get_data())
 
         self.client.post('/api/v2/menu',
                          headers={'x-access-token': final_token},
@@ -125,17 +125,17 @@ class TestAddMealToMenu(MainTestCase):
         res = self.client.put('/api/v2/orders/1',
                               headers={'x-access-token': final_token},
                               json={"status": "complete"})
-        self.assertEqual(b'The order status has been updated', res.data)
+        self.assertIn(b'The order status has been updated', res.data)
         res = self.client.put('/api/v2/orders/1',
                               headers={'x-access-token': final_token},
                               json={"status": "accepted"})
-        self.assertEqual(b'Please enter the required status in the correct format: '
+        self.assertIn(b'Please enter the required status in the correct format: '
                          b'"status":"the_status" which can be "processing", "complete" '
                          b'"cancelled"', res.data)
         res = self.client.put('/api/v2/orders/254',
                               headers={'x-access-token': final_token},
                               json={"status": "complete"})
-        self.assertEqual(b'There is no such order', res.data)
+        self.assertIn(b'There is no such order', res.data)
 
     def test_non_admin_modify_order(self):
         self.client.post('/api/v2/auth/signup', json=self.register_user)
@@ -156,13 +156,13 @@ class TestAddMealToMenu(MainTestCase):
         self.client.post('/api/v2/auth/signup', json=self.register_user)
 
         res = self.client.put('/api/v2/users/1', headers={'x-access-token': admin_token}, json={"admin": "True"})
-        self.assertEqual('The user admin rights have been updated', res.get_data(as_text=True))
+        self.assertIn('The user admin rights have been updated', res.get_data(as_text=True))
 
         res = self.client.put('/api/v2/users/254', headers={'x-access-token': admin_token}, json={"admin": "True"})
-        self.assertEqual('The user does not exist', res.get_data(as_text=True))
+        self.assertIn('The user does not exist', res.get_data(as_text=True))
 
         res = self.client.put('/api/v2/users/1', headers={'x-access-token': admin_token}, json={"admin": "not"})
-        self.assertIn('Please enter the correct JSON format: "admin": "True" or "admin": "False"',
+        self.assertIn('To promote a user or demote a user set',
                       res.get_data(as_text=True))
         user = base64.b64encode(bytes('BryanCee:Brian12', 'UTF-8')).decode('UTF-8')
         res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})

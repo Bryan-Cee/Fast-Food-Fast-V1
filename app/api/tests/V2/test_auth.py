@@ -18,40 +18,38 @@ class TestAuth(MainTestCase):
                          json=self.register_user)
         res = self.client.post('/api/v2/auth/signup',
                                json=self.register_user)
-        self.assertEqual(b'The username has already been taken please try another', res.data)
+        self.assertIn(b'The username has already been taken please try another', res.data)
 
     def test_wrong_credentials(self):
         res = self.client.post('/api/v2/auth/signup',
                                json={'username': '',
                                      'password': '',
                                      'email': 'johndoe@gmail.com'})
-        self.assertEqual(b'Invalid entry: please enter the correct JSON format - '
-                         b'"username":"your_username", "password":"your_password",'
-                         b'"email":"your@email.com"', res.data)
+        self.assertIn(b'To create an account', res.data)
         res = self.client.post('/api/v2/auth/signup',
                                json={'username': '@2ndne',
                                      'password': 'Bryan12',
                                      'email': 'bryna@gmail.com'})
-        self.assertEqual(b'Enter only alphabetic characters for your username', res.data)
+        self.assertIn(b'Enter only alphabetic characters for your username', res.data)
 
         res = self.client.post('/api/v2/auth/signup',
                                json={'username': 'Bryan',
                                      'password': 'ryan',
                                      'email': 'bryan@gmail.com'})
-        self.assertEqual(b'Enter a password longer than 6 characters', res.data)
+        self.assertIn(b'Enter a password longer than 6 characters', res.data)
 
         res = self.client.post('/api/v2/auth/signup',
                                json={'username': 'Bryan',
                                      'password': 'Bryan12',
                                      'email': 'bryan@gma5il.com'})
-        self.assertEqual(b'Enter the correct format of the email e.g. johndoe@mail.com', res.data)
+        self.assertIn(b'Enter the correct format of the email e.g. johndoe@mail.com', res.data)
 
         res = self.client.post('/api/v2/auth/signup',
                                json={'username': 'Bryan',
                                      'password': 'bryyane',
                                      'email': 'bryan@gmail.com'})
-        self.assertEqual(b'Password must have atleast one lowercase one '
-                         b'upper case and one digit', res.data)
+        self.assertIn(b'Password must have atleast one lowercase one '
+                      b'upper case and one digit', res.data)
 
     def test_login(self):
         """Test logging in"""
@@ -82,4 +80,4 @@ class TestAuth(MainTestCase):
                          json=self.register_user)
         user = base64.b64encode(bytes('BryanCee:', 'UTF-8')).decode('UTF-8')
         res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
-        self.assertEqual(b'Could not verify, please input all your credentials', res.data)
+        self.assertIn(b'Could not verify, please input all your credentials', res.data)
