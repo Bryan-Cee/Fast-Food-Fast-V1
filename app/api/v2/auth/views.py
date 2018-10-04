@@ -14,10 +14,7 @@ config = app_configs[env]
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/api/v2/auth')
 
-conn = psycopg2.connect(host="localhost",
-                        database=config.DBNAME,
-                        user=config.USER,
-                        password=config.PASSWORD)
+conn = connection
 
 
 @auth_bp.route('/signup', methods=['POST'])

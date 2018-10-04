@@ -6,7 +6,7 @@ from instance.config import app_configs
 
 config = app_configs[os.getenv('APP_SETTINGS')]
 
-connection = psycopg2.connect(config.DATABASE_URL)
+
 
 
 class Default:
@@ -63,8 +63,8 @@ class Default:
 
 
 class InitDB:
-    def __init__(self, config):
-        self.conn = connection
+    def __init__(self, configs):
+        self.conn = psycopg2.connect(config.DATABASE_URL)
 
     def create_tables(self):
         password = os.getenv('ADMIN_PASSWORD')
