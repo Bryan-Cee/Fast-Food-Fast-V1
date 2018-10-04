@@ -8,22 +8,16 @@ class TestAuth(MainTestCase):
     def test_create_account(self):
         """Test create an account"""
         res = self.client.post('/api/v2/auth/signup',
-                               json={'username': 'JohnDoe',
-                                     'password': 'JohnDoe12',
-                                     'email': 'johndoe@gmail.com'})
+                               json=self.register_user)
         self.assertIn(b'Success', res.data)
         self.assertEqual(201, res.status_code)
 
     def test_username_taken(self):
         """Test creating account with a taken username"""
         self.client.post('/api/v2/auth/signup',
-                         json={'username': 'JohnDoe',
-                               'password': 'JohnDoe12',
-                               'email': 'johndoe@gmail.com'})
+                         json=self.register_user)
         res = self.client.post('/api/v2/auth/signup',
-                               json={'username': 'JohnDoe',
-                                     'password': 'JohnDoe12',
-                                     'email': 'johndoe@gmail.com'})
+                               json=self.register_user)
         self.assertEqual(b'The username has already been taken please try another', res.data)
 
     def test_wrong_credentials(self):
@@ -62,9 +56,7 @@ class TestAuth(MainTestCase):
     def test_login(self):
         """Test logging in"""
         self.client.post('/api/v2/auth/signup',
-                         json={'username': 'BryanCee',
-                               'password': 'Brian12',
-                               'email': 'bryancee@gmail.com'})
+                         json=self.register_user)
         user = base64.b64encode(bytes('BryanCee:Brian12', 'UTF-8')).decode('UTF-8')
         res = self.client.post('/api/v2/auth/login',
                                headers={'Authorization': 'Basic ' + user})
@@ -73,9 +65,7 @@ class TestAuth(MainTestCase):
     def test_login_wrong_password(self):
         """Test logging in with wrong password"""
         self.client.post('/api/v2/auth/signup',
-                         json={'username': 'BryanCee',
-                               'password': 'Brian12',
-                               'email': 'bryancee@gmail.com'})
+                         json=self.register_user)
         user = base64.b64encode(bytes('BryanCee:12345', 'UTF-8')).decode('UTF-8')
         res = self.client.post('/api/v2/auth/login',
                                headers={'Authorization': 'Basic ' + user})
@@ -89,9 +79,7 @@ class TestAuth(MainTestCase):
 
     def test_login_wrong_authorization_info(self):
         self.client.post('/api/v2/auth/signup',
-                         json={'username': 'BryanCee',
-                               'password': '123456',
-                               'email': 'bryan@gmail.com'})
+                         json=self.register_user)
         user = base64.b64encode(bytes('BryanCee:', 'UTF-8')).decode('UTF-8')
         res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
         self.assertEqual(b'Could not verify, please input all your credentials', res.data)

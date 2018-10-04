@@ -26,11 +26,9 @@ class TestUser(MainTestCase):
                          json=self.correct_order)
 
         # User creates an account
-        self.client.post('/api/v2/auth/signup', json={'username': 'Bellacee',
-                                                      'password': 'Bella12',
-                                                      'email': 'johndoe@gmail.com'})
+        self.client.post('/api/v2/auth/signup', json=self.register_user)
         # User logs in to the account
-        user = base64.b64encode(bytes('Bellacee:Bella12', 'UTF-8')).decode('UTF-8')
+        user = base64.b64encode(bytes('BryanCee:Brian12', 'UTF-8')).decode('UTF-8')
         res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
         token = res.get_data(as_text=True)
         final_token = ast.literal_eval(token.replace(" ", ""))['Token']
@@ -47,11 +45,9 @@ class TestUser(MainTestCase):
 
     def test_get_user_history(self):
         """Test getting user history"""
-        self.client.post('/api/v2/auth/signup', json={'username': 'Bellacee',
-                                                      'password': 'Bella12',
-                                                      'email': 'bellacee@gmail.com'})
+        self.client.post('/api/v2/auth/signup', json=self.register_user)
         # User logs in to the account
-        user = base64.b64encode(bytes('Bellacee:Bella12', 'UTF-8')).decode('UTF-8')
+        user = base64.b64encode(bytes('BryanCee:Brian12', 'UTF-8')).decode('UTF-8')
         res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
         token = res.get_data(as_text=True)
         final_token = ast.literal_eval(token.replace(" ", ""))['Token']
@@ -61,7 +57,7 @@ class TestUser(MainTestCase):
 
     def test_get_user_history_ordered(self):
         """Test getting user history"""
-        res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' +self. user})
+        res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + self. user})
         # Admin creates a meal in the menu
         token = res.get_data(as_text=True)
         final_token = ast.literal_eval(token.replace(" ", ""))['Token']
@@ -69,11 +65,9 @@ class TestUser(MainTestCase):
                          headers={'x-access-token': final_token},
                          json=self.correct_order)
         # User create account
-        self.client.post('/api/v2/auth/signup', json={'username': 'Bellacee',
-                                                      'password': 'Bella12',
-                                                      'email': 'johndoe@gmail.com'})
+        self.client.post('/api/v2/auth/signup', json=self.register_user)
         # User logs in to the account
-        user = base64.b64encode(bytes('Bellacee:Bella12', 'UTF-8')).decode('UTF-8')
+        user = base64.b64encode(bytes('BryanCee:Brian12', 'UTF-8')).decode('UTF-8')
         res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
         token = res.get_data(as_text=True)
         final_token = ast.literal_eval(token.replace(" ", ""))['Token']

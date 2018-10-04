@@ -76,7 +76,9 @@ class InitDB:
 
     def create_tables(self):
         password = os.getenv('ADMIN_PASSWORD')
-        email = 'admin@admin.com'
+        email = os.getenv('ADMIN_EMAIL')
+        username = os.getenv('ADMIN_NAME')
+
         hashed_pwd = generate_password_hash(password, method='sha256')
         conn = psycopg2.connect(host="localhost",
                                      database=self.dbame,
@@ -88,6 +90,6 @@ class InitDB:
                 for command in create_tables:
                     cur.execute(command)
                 cur.execute("INSERT INTO Users(username, email, password, admin) "
-                            "VALUES ('Admin', %s, %s, TRUE)", (email, hashed_pwd))
+                            "VALUES (%s, %s, %s, TRUE)", (username, email, hashed_pwd))
                 conn.commit()
         conn.close()

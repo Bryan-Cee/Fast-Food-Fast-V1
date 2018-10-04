@@ -2,6 +2,7 @@
 import base64
 import ast
 
+
 from .base import MainTestCase
 
 
@@ -56,9 +57,7 @@ class TestAddMealToMenu(MainTestCase):
 
     def test_add_meal_non_admin(self):
         """Test normal user adding meal to the menu"""
-        self.client.post('/api/v2/auth/signup', json={'username': 'BryanCee',
-                                                      'password': 'Brian12',
-                                                      'email': 'bryancee@gmail.com'})
+        self.client.post('/api/v2/auth/signup', json=self.register_user)
         user = base64.b64encode(bytes('BryanCee:Brian12', 'UTF-8')).decode('UTF-8')
         res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
 
@@ -79,7 +78,6 @@ class TestAddMealToMenu(MainTestCase):
 
     def test_getting_all_orders(self):
         res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + self.user})
-
         token = res.get_data(as_text=True)
         final_token = ast.literal_eval(token.replace(" ", ""))['Token']
         res = self.client.get('/api/v2/orders/', headers={"x-access-token": final_token})
@@ -99,12 +97,11 @@ class TestAddMealToMenu(MainTestCase):
 
         res = self.client.get('/api/v2/orders/254', headers={"x-access-token": final_token})
         self.assertIn(b'There is no order with that ID', res.get_data())
+        self.client.post('/api/v2/auth/signup', json=self.register_user)
 
     def test_get_orders_non_admin(self):
         """Test normal user getting orders"""
-        self.client.post('/api/v2/auth/signup', json={'username': 'BryanCee',
-                                                      'password': 'Brian12',
-                                                      'email': 'bryancee@gmail.com'})
+        self.client.post('/api/v2/auth/signup', json=self.register_user)
         user = base64.b64encode(bytes('BryanCee:Brian12', 'UTF-8')).decode('UTF-8')
         res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
 
@@ -141,9 +138,7 @@ class TestAddMealToMenu(MainTestCase):
         self.assertEqual(b'There is no such order', res.data)
 
     def test_non_admin_modify_order(self):
-        self.client.post('/api/v2/auth/signup', json={'username': 'BryanCee',
-                                                      'password': 'Brian12',
-                                                      'email': 'bryancee@gmail.com'})
+        self.client.post('/api/v2/auth/signup', json=self.register_user)
         user = base64.b64encode(bytes('BryanCee:Brian12', 'UTF-8')).decode('UTF-8')
         res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
 
@@ -153,3 +148,27 @@ class TestAddMealToMenu(MainTestCase):
                               headers={'x-access-token': final_token},
                               json={"status": "complete"})
         self.assertIn('You are not an administrator', res.get_data(as_text=True))
+
+    def test_promote_user(self):
+        res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + self.user})
+        token = res.get_data(as_text=True)
+        admin_token = ast.literal_eval(token.replace(" ", ""))['Token']
+        self.client.post('/api/v2/auth/signup', json=self.register_user)
+
+        res = self.client.put('/api/v2/users/1', headers={'x-access-token': admin_token}, json={"admin": "True"})
+        self.assertEqual('The user admin rights have been updated', res.get_data(as_text=True))
+
+        res = self.client.put('/api/v2/users/254', headers={'x-access-token': admin_token}, json={"admin": "True"})
+        self.assertEqual('The user does not exist', res.get_data(as_text=True))
+
+        res = self.client.put('/api/v2/users/1', headers={'x-access-token': admin_token}, json={"admin": "not"})
+        self.assertIn('Please enter the correct JSON format: "admin": "True" or "admin": "False"',
+                      res.get_data(as_text=True))
+        user = base64.b64encode(bytes('BryanCee:Brian12', 'UTF-8')).decode('UTF-8')
+        res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
+        token = res.get_data(as_text=True)
+        user_token = ast.literal_eval(token.replace(" ", ""))['Token']
+        res = self.client.put('/api/v2/users/1', headers={'x-access-token': user_token}, json={"admin": "True"})
+        self.assertIn(b'You are not an administrator', res.data)
+
+

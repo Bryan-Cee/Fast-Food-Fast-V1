@@ -76,3 +76,17 @@ class Admin:
                     cur.execute("UPDATE orders SET order_status = %s WHERE order_id = %s", (status, order_id))
                     conn.commit()
                     return "The order status has been updated"
+
+    def promote_user(self, admin, user_id):
+        with self.conn as conn:
+            with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+                cur.execute("SELECT * FROM users WHERE user_id= %s", (user_id,))
+                rows = cur.fetchone()
+                if not rows:
+                    conn.rollback()
+                    return 'The user does not exist', 404
+                if not admin or admin not in ('True', 'False'):
+                    return 'Please enter the correct JSON format: "admin": "True" or "admin": "False"', 400
+                cur.execute("UPDATE users SET admin = %s WHERE user_id = %s", (admin, user_id))
+                conn.commit()
+                return "The user admin rights have been updated", 201

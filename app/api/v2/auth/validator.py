@@ -9,6 +9,7 @@ def credentials_checker(username, password, email):
     upper = re.compile(r'[A-Z]')
     text = re.compile(r'[A-Za-z]')
     mail = re.compile(r'[\w\.-]+@[a-z]+\.[a-z]{2,4}')
+
     check_email = mail.findall(email)
     characters = text.findall(username)
     if len(characters) != len(username):

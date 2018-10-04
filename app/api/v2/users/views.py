@@ -12,7 +12,7 @@ user = Blueprint('users', __name__, url_prefix='/api/v2')
 def make_order(current_user):
 	if request.method == 'POST':
 		if not current_user:
-			return make_response("Please login to order", 400)
+			return make_response("Please login to order", 401)
 		user_data = request.get_json()
 		meal_id = user_data.get('meal_id')
 		user_id = current_user['user_id']
@@ -24,6 +24,6 @@ def make_order(current_user):
 		return place_order(meal_id, user_id, time, quantity)
 
 	if not current_user:
-		return make_response("Login to view order history")
+		return make_response("Login to view order history", 401)
 	from app.api.v2.users.models import get_history
 	return get_history(current_user['user_id'])

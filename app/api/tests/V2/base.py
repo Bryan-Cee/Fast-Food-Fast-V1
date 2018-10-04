@@ -21,6 +21,9 @@ class MainTestCase(unittest.TestCase):
         self.correct_order = {"meal_name": 'Pizza',
                               "meal_desc": 'Seasoned',
                               "meal_price": 7.99}
+        self.register_user = {'username': 'BryanCee',
+                              'password': 'Brian12',
+                              'email': 'bryancee@gmail.com'}
         self.user = base64.b64encode(bytes('Admin:Admin12', 'UTF-8')).decode('UTF-8')
 
     def tearDown(self):
