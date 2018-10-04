@@ -5,13 +5,9 @@ from flask import request, make_response, jsonify
 import psycopg2
 import psycopg2.extras
 from instance.config import app_configs
+from ..users.models import conn
 
 env = app_configs[os.getenv('APP_SETTINGS')]
-
-conn = psycopg2.connect(host="localhost",
-                        database=env.DBNAME,
-                        user=env.USER,
-                        password=env.PASSWORD)
 
 
 def token_require(func):
