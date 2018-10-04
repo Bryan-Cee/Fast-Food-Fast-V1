@@ -11,8 +11,8 @@ admin_bp = Blueprint('admin', __name__, url_prefix='/api/v2')
 @token_require
 def get_menu(current_user):
     if request.method == 'POST':
-        if not current_user[1]:
-            return jsonify({"Failed": "You are not an administrator"})
+        if not current_user['admin']:
+            return jsonify({"Failed": "You are not an administrator"}), 401
         data = request.get_json()
         meal_name = data.get('meal_name')
         meal_desc = data.get('meal_desc')
@@ -27,8 +27,8 @@ def get_menu(current_user):
 @admin_bp.route('/orders/', methods=['GET'])
 @token_require
 def view_orders(current_user):
-    if not current_user[1]:
-        return jsonify({"Failed": "You are not an administrator"})
+    if not current_user['admin']:
+        return jsonify({"status": "failed", "message": "You are not an administrator"}), 401
     return Admin().all_orders()
 
 
@@ -36,16 +36,26 @@ def view_orders(current_user):
 @token_require
 def view_specific_order(current_user, order_id):
     if request.method == 'PUT':
-        if not current_user[1]:
-            return jsonify({"Failed": "You are not an administrator"})
+        if not current_user['admin']:
+            return jsonify({"status":"Failed", "message": "You are not an administrator"}), 401
         data = request.get_json()
         status = data.get('status')
         if status not in ('processing', 'cancelled', 'complete'):
             prompt = ('Please enter the required status in the correct format: '
                       '"status":"the_status" which can be "processing", "complete" '
                       '"cancelled"')
-            return make_response(prompt)
+            return make_response(prompt, 409)
         return Admin().modify_order(order_id, status)
-    if not current_user[1]:
-        return jsonify({"Failed": "You are not an administrator"})
+    if not current_user['admin']:
+        return jsonify({"status": "Failed", "message": "You are not an administrator"}), 401
     return Admin().get_user_orders(order_id)
+
+
+@admin_bp.route('/users/<user_id>', methods=['PUT'])
+@token_require
+def make_user_admin(current_user, user_id):
+    if not current_user['admin']:
+        return jsonify({"status": "Failed", "message": "You are not an administrator"}), 401
+    data = request.get_json()
+    admin = data.get('admin')
+    return Admin().promote_user(admin, user_id)

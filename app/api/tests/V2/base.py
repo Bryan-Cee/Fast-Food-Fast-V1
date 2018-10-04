@@ -1,4 +1,5 @@
 """"app/api/tests/v2/base.py"""
+import base64
 import unittest
 import psycopg2
 from instance.config import TestingConfig
@@ -17,6 +18,13 @@ class MainTestCase(unittest.TestCase):
         self.client = self.app.test_client()
         self.app_context = self.app.app_context()
         self.app_context.push()
+        self.correct_order = {"meal_name": 'Pizza',
+                              "meal_desc": 'Seasoned',
+                              "meal_price": 7.99}
+        self.register_user = {'username': 'BryanCee',
+                              'password': 'Brian12',
+                              'email': 'bryancee@gmail.com'}
+        self.user = base64.b64encode(bytes('Admin:Admin12', 'UTF-8')).decode('UTF-8')
 
     def tearDown(self):
         conn = psycopg2.connect(host='localhost', database=DBNAME, user=USER, password=PASSWORD)

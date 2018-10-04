@@ -13,27 +13,22 @@ class TestUser(MainTestCase):
     def test_make_order_not_authenticated(self):
         """Test making an order when not authenticated"""
         res = self.client.post('/api/v2/users/orders', json={'meal_id': 1})
-        self.assertEqual('Token is missing', res.get_data(as_text=True))
+        self.assertIn('Token is missing', res.get_data(as_text=True))
 
     def test_make_valid_order(self):
         """"Test making an order"""
-        # Admin login
-        user = base64.b64encode(bytes('Admin:Admin12', 'UTF-8')).decode('UTF-8')
-        res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
+        res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + self.user})
         # Admin creates a meal in the menu
         token = res.get_data(as_text=True)
         final_token = ast.literal_eval(token.replace(" ", ""))['Token']
         self.client.post('/api/v2/menu',
                          headers={'x-access-token': final_token},
-                         json={"meal_name": 'Pizza',
-                               "meal_desc": 'Seasoned',
-                               "meal_price": 7.99})
+                         json=self.correct_order)
 
         # User creates an account
-        self.client.post('/api/v2/auth/signup', json={'username': 'Bellacee',
-                                                      'password': 'Bella12'})
+        self.client.post('/api/v2/auth/signup', json=self.register_user)
         # User logs in to the account
-        user = base64.b64encode(bytes('Bellacee:Bella12', 'UTF-8')).decode('UTF-8')
+        user = base64.b64encode(bytes('BryanCee:Brian12', 'UTF-8')).decode('UTF-8')
         res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
         token = res.get_data(as_text=True)
         final_token = ast.literal_eval(token.replace(" ", ""))['Token']
@@ -45,15 +40,14 @@ class TestUser(MainTestCase):
         no_id_res = self.client.post('/api/v2/users/orders',
                                      headers={'x-access-token': final_token},
                                      json={})
-        self.assertEqual('Please enter the correct format of keys',
-                         no_id_res.get_data(as_text=True))
+        self.assertIn('For posting an order ensure that',
+                      no_id_res.get_data(as_text=True))
 
     def test_get_user_history(self):
         """Test getting user history"""
-        self.client.post('/api/v2/auth/signup', json={'username': 'Bellacee',
-                                                      'password': 'Bella12'})
+        self.client.post('/api/v2/auth/signup', json=self.register_user)
         # User logs in to the account
-        user = base64.b64encode(bytes('Bellacee:Bella12', 'UTF-8')).decode('UTF-8')
+        user = base64.b64encode(bytes('BryanCee:Brian12', 'UTF-8')).decode('UTF-8')
         res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
         token = res.get_data(as_text=True)
         final_token = ast.literal_eval(token.replace(" ", ""))['Token']
@@ -63,22 +57,17 @@ class TestUser(MainTestCase):
 
     def test_get_user_history_ordered(self):
         """Test getting user history"""
-        # Admin login
-        user = base64.b64encode(bytes('Admin:Admin12', 'UTF-8')).decode('UTF-8')
-        res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
+        res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + self. user})
         # Admin creates a meal in the menu
         token = res.get_data(as_text=True)
         final_token = ast.literal_eval(token.replace(" ", ""))['Token']
         self.client.post('/api/v2/menu',
                          headers={'x-access-token': final_token},
-                         json={"meal_name": 'Pizza',
-                               "meal_desc": 'Seasoned',
-                               "meal_price": 7.99})
+                         json=self.correct_order)
         # User create account
-        self.client.post('/api/v2/auth/signup', json={'username': 'Bellacee',
-                                                      'password': 'Bella12'})
+        self.client.post('/api/v2/auth/signup', json=self.register_user)
         # User logs in to the account
-        user = base64.b64encode(bytes('Bellacee:Bella12', 'UTF-8')).decode('UTF-8')
+        user = base64.b64encode(bytes('BryanCee:Brian12', 'UTF-8')).decode('UTF-8')
         res = self.client.post('/api/v2/auth/login', headers={'Authorization': 'Basic ' + user})
         token = res.get_data(as_text=True)
         final_token = ast.literal_eval(token.replace(" ", ""))['Token']
@@ -88,7 +77,7 @@ class TestUser(MainTestCase):
                          json={"meal_id": 1})
         res = self.client.get('/api/v2/users/orders',
                               headers={'x-access-token': final_token})
-        self.assertIn(b'User_History', res.get_data())
+        self.assertIn(b'history', res.get_data())
         # User makes an invalid order
         res = self.client.post('/api/v2/users/orders',
                                headers={'x-access-token': final_token},
@@ -105,7 +94,7 @@ class TestUser(MainTestCase):
 
         res = self.client.get('/api/v2/users/orders',
                               headers={'x-access-token': token})
-        self.assertEqual("Login to view order history", res.get_data(as_text=True))
+        self.assertIn("Login to view order history", res.get_data(as_text=True))
 
     def test_order_meal_without_login(self):
         """Test ordering meals without logging in"""
@@ -117,7 +106,7 @@ class TestUser(MainTestCase):
 
         res = self.client.post('/api/v2/users/orders',
                                headers={'x-access-token': token})
-        self.assertEqual("Please login to order", res.get_data(as_text=True))
+        self.assertIn("Please login to order", res.get_data(as_text=True))
 
     def test_token_expired(self):
         """Test using an expired auth - token"""
@@ -129,4 +118,4 @@ class TestUser(MainTestCase):
 
         res = self.client.get('/api/v2/users/orders',
                               headers={'x-access-token': token})
-        self.assertEqual("Token has expired Please login again", res.get_data(as_text=True))
+        self.assertIn("Token has expired Please login again", res.get_data(as_text=True))
