@@ -66,7 +66,7 @@ class InitDB:
         username = os.getenv('ADMIN_NAME')
 
         hashed_pwd = generate_password_hash(password, method='sha256')
-        conn = psycopg2.connect(connection)
+        conn = self.conn
         with conn:
             with conn.cursor() as cur:
                 create_tables = Default().commands
