@@ -28,7 +28,7 @@ def get_menu(current_user):
 @token_require
 def view_orders(current_user):
     if not current_user['admin']:
-        return jsonify({"Failed": "You are not an administrator"}), 400
+        return jsonify({"Failed": "You are not an administrator"}), 401
     return Admin().all_orders()
 
 
@@ -39,7 +39,7 @@ def view_specific_order(current_user, order_id):
         return 'Log in to view orders', 400
     if request.method == 'PUT':
         if not current_user['admin']:
-            return jsonify({"Failed": "You are not an administrator"}), 400
+            return jsonify({"Failed": "You are not an administrator"}), 401
         data = request.get_json()
         status = data.get('status')
         if status not in ('processing', 'cancelled', 'complete'):
@@ -49,5 +49,5 @@ def view_specific_order(current_user, order_id):
             return make_response(prompt, 409)
         return Admin().modify_order(order_id, status)
     if not current_user['admin']:
-        return jsonify({"Failed": "You are not an administrator"}), 400
+        return jsonify({"Failed": "You are not an administrator"}), 401
     return Admin().get_user_orders(order_id)
