@@ -13,7 +13,7 @@ def get_menu(current_user):
     if request.method == 'POST':
         if not current_user['admin']:
             return jsonify({"Failed": "You are not an administrator"}), 401
-        data = request.get_json()
+        data = request.get_json(force=True)
         meal_name = data.get('meal_name')
         meal_desc = data.get('meal_desc')
         if not meal_desc:
@@ -37,8 +37,8 @@ def view_orders(current_user):
 def view_specific_order(current_user, order_id):
     if request.method == 'PUT':
         if not current_user['admin']:
-            return jsonify({"status":"Failed", "message": "You are not an administrator"}), 401
-        data = request.get_json()
+            return jsonify({"status": "Failed", "message": "You are not an administrator"}), 401
+        data = request.get_json(force=True)
         status = data.get('status')
         if status not in ('processing', 'cancelled', 'complete'):
             prompt = ('Please enter the required status in the correct format: '
@@ -56,6 +56,6 @@ def view_specific_order(current_user, order_id):
 def make_user_admin(current_user, user_id):
     if not current_user['admin']:
         return jsonify({"status": "Failed", "message": "You are not an administrator"}), 401
-    data = request.get_json()
+    data = request.get_json(force=True)
     admin = data.get('admin')
     return Admin().promote_user(admin, user_id)

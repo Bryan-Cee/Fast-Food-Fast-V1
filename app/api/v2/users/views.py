@@ -13,7 +13,7 @@ def make_order(current_user):
     if request.method == 'POST':
         if not current_user:
             return make_response(jsonify({"status": "Failed", "message": "Please login to order"}), 401)
-        user_data = request.get_json()
+        user_data = request.get_json(force=True)
         meal_id = user_data.get('meal_id')
         user_id = current_user['user_id']
         time = datetime.datetime.now()
