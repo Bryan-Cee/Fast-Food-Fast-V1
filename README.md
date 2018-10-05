@@ -10,7 +10,7 @@ Fast-Food-Fast is a food delivery service app for a restaurant.
 - Initialize and activate a virtualenv
  ```
  $ virtualenv --no-site-packages env
- $ cd env/sripts/activate
+ $ source env/sripts/activate
  ```
 - Install the dependencies
  ```
@@ -20,6 +20,10 @@ Fast-Food-Fast is a food delivery service app for a restaurant.
 ``` 
 $ export FLASK_APP=run.py
 $ export FLASK_ENV=development
+$ export APP_SETTINGS=development
+$ export ADMIN_PASSWORD=your_choice
+$ export ADMIN_NAME=your_choice
+$ export AMDIN_EMAIL=a_valid_email
 ```
 - Run the development server
 ```
@@ -28,7 +32,7 @@ $ flask run
 - Navigate to [http://localhost:5000](http://localhost:5000)
 
 - Test all endpoints using postman
-
+- Use Basic Auth for authorization
 
 ## Endpoints
 
@@ -36,13 +40,17 @@ Here is a list of all endpoints
 
 | Endpoint                       | Functionality                 |
 | ------------------------------ | ----------------------------- |
-| GET   /api/v1/orders           | Get all orders                |
-| GET   /api/v1/orders/orderid | Fetch a specific order        |
-| POST   /api/v1/orders          | Place a new order             |
-| PUT   /api/v1/orders/orderid | Update the status of an order |
-| POST   /api/v1/menu            | Create a meal in the menu     |
-| GET   /api/v1/menu             | Get all meals in the menu     |
- 
+| GET   /api/v2/orders           | Get all orders                |
+| GET   /api/v2/orders/orderid | Fetch a specific order        |
+| POST   /api/v2/users/orders    | Place a new order             |
+| GET   /api/v2/users/orders    | Get user order history             |
+| PUT   /api/v2/orders/orderid | Update the status of an order |
+| PUT   /api/v2/users/orderid | Change the role of a user |
+| POST   /api/v2/menu            | Create a meal in the menu     |
+| GET   /api/v2/menu             | Get all meals in the menu     |
+| GET   /api/v2/auth/signup      | Signup for an account    |
+| GET   /api/v2/auth/login      | login to an account    |
+
  ## Heroku
  https://immense-ocean-82555.herokuapp.com
  

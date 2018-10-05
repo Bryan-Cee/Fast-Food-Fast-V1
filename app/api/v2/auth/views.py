@@ -20,7 +20,7 @@ conn = connection
 @auth_bp.route('/signup', methods=['POST'])
 def user_login():
     from .models import Auth
-    data = request.get_json()
+    data = request.get_json(force=True)
     username = data.get('username')
     password = data.get('password')
     email = data.get('email')
