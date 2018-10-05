@@ -21,10 +21,10 @@ def place_order(meal_id, user_id, time, quantity):
                             (meal_id, user_id, time, quantity))
             except (Exception, psycopg2.IntegrityError):
                 conn.rollback()
-                return jsonify({"status": "Failed", "message": "The meal does not exists in the menu"}), 404
+                return jsonify({"status": "Not found", "message": "The meal does not exists in the menu"}), 404
             finally:
                 conn.commit()
-    return jsonify({"status": "Failed", "message": "Order has been received"}), 201
+    return jsonify({"status": "OK", "message": "Order has been received"}), 201
 
 
 def get_history(user_id):
@@ -38,5 +38,5 @@ def get_history(user_id):
             for order in history:
                 order['total'] = order['quantity'] * order['meal_price']
             if not history:
-                return make_response(jsonify({'status': 'success', 'message': 'You have no history'}))
+                return make_response(jsonify({'status': 'OK', 'message': 'You have no history'}))
             return make_response(jsonify({"history": history}))

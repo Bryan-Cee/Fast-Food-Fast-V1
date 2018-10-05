@@ -40,7 +40,7 @@ class Admin:
                 cur.execute("SELECT * FROM Menu")
                 menu = cur.fetchall()
                 if not menu:
-                    return make_response(jsonify({'status': 'success', 'message': 'There are no meals in the menu at the moment'}))
+                    return make_response(jsonify({'status': 'OK', 'message': 'There are no meals in the menu at the moment'}))
                 return jsonify({"menu": menu})
 
     def all_orders(self):
@@ -52,7 +52,7 @@ class Admin:
                     "JOIN Menu ON Menu.meal_id = Orders.meal_id;")
                 orders = cur.fetchall()
                 if not orders:
-                    return make_response(jsonify({'status': 'failed', 'message': 'There are no orders currently'}))
+                    return make_response(jsonify({'status': 'OK', 'message': 'There are no orders currently'}))
                 return make_response(jsonify({"All orders": orders}))
 
     def get_user_orders(self, order_id):
@@ -64,7 +64,7 @@ class Admin:
                     "JOIN Menu ON Menu.meal_id = Orders.meal_id WHERE order_id = %s;", (order_id,))
                 history = cur.fetchall()
                 if not history:
-                    return make_response(jsonify({'status': 'failed', 'message': 'There is no order with that ID'}))
+                    return make_response(jsonify({'status': 'Not found', 'message': 'There is no order with that ID'}), 404)
                 return make_response(jsonify({"The order": history}))
 
     def modify_order(self, order_id, status):
@@ -74,7 +74,7 @@ class Admin:
                     rows = cur.fetchone()
                     if not rows:
                         conn.rollback()
-                        return make_response(jsonify({'status': 'failed', 'message': 'There is no such order'}), 404)
+                        return make_response(jsonify({'status': 'Not found', 'message': 'There is no such order'}), 404)
                     cur.execute("UPDATE orders SET order_status = %s WHERE order_id = %s", (status, order_id))
                     conn.commit()
                     return make_response(jsonify({"status": "success", "message": "The order status has been updated"}), 201)
@@ -86,7 +86,7 @@ class Admin:
                 rows = cur.fetchone()
                 if not rows:
                     conn.rollback()
-                    return jsonify({'status': 'Failed', 'message': 'The user does not exist'}), 404
+                    return jsonify({'status': 'Not found', 'message': 'The user does not exist'}), 404
                 if not admin or admin not in ('True', 'False'):
                     return jsonify({"status": 'failed', 'message': 'To promote a user or demote a user set '
                                                                    ': "admin": "True" or "admin": "False"'}), 400
