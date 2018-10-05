@@ -41,10 +41,8 @@ def view_specific_order(current_user, order_id):
         data = request.get_json(force=True)
         status = data.get('status')
         if status not in ('processing', 'cancelled', 'complete'):
-            prompt = ('Please enter the required status in the correct format: '
-                      '"status":"the_status" which can be "processing", "complete" '
-                      '"cancelled"')
-            return make_response(prompt, 409)
+            prompt = ({"status":"failed", "message":'Please enter the required status in the correct format: "status":"the_status" which can be "processing", "complete" or "cancelled"'})
+            return make_response(jsonify(prompt), 400)
         return Admin().modify_order(order_id, status)
     if not current_user['admin']:
         return jsonify({"status": "Failed", "message": "You are not an administrator"}), 401
