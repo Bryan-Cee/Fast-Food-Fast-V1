@@ -6,10 +6,7 @@ from instance.config import app_configs
 
 config = app_configs[os.getenv('APP_SETTINGS')]
 
-conn = psycopg2.connect(host="localhost",
-                        database=config.DBNAME,
-                        user=config.USER,
-                        password=config.PASSWORD)
+conn = psycopg2.connect(config.DATABASE_URL)
 
 
 def place_order(meal_id, user_id, time, quantity):

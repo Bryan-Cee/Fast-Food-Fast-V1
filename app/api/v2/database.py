@@ -2,6 +2,10 @@ import os
 import psycopg2
 from werkzeug.security import generate_password_hash
 
+from instance.config import app_configs
+
+config = app_configs[os.getenv('APP_SETTINGS')]
+
 
 class Default:
     """Initialize the tables in the database"""
@@ -57,10 +61,8 @@ class Default:
 
 
 class InitDB:
-    def __init__(self, config):
-        self.dbame = config.get('DBNAME')
-        self.user = config.get('USER')
-        self.password = config.get('PASSWORD')
+    def __init__(self, configs):
+        self.conn = psycopg2.connect(config.DATABASE_URL)
 
     def create_tables(self):
         password = os.getenv('ADMIN_PASSWORD')
@@ -68,10 +70,7 @@ class InitDB:
         username = os.getenv('ADMIN_NAME')
 
         hashed_pwd = generate_password_hash(password, method='sha256')
-        conn = psycopg2.connect(host="localhost",
-                                     database=self.dbame,
-                                     user=self.user,
-                                     password=self.password)
+        conn = self.conn
         with conn:
             with conn.cursor() as cur:
                 create_tables = Default().commands

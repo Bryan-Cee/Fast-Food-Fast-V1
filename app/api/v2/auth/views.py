@@ -7,16 +7,14 @@ from flask import Blueprint, request, make_response, jsonify
 from werkzeug.security import check_password_hash
 from instance.config import app_configs
 import psycopg2.extras
+from ..users.models import conn as connection
 
 env = os.getenv('APP_SETTINGS')
 config = app_configs[env]
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/api/v2/auth')
 
-conn = psycopg2.connect(host="localhost",
-                        database=config.DBNAME,
-                        user=config.USER,
-                        password=config.PASSWORD)
+conn = connection
 
 
 @auth_bp.route('/signup', methods=['POST'])

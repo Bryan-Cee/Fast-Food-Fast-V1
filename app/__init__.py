@@ -1,6 +1,6 @@
 """__init__"""
 import os
-from flask import Flask
+from flask import Flask, redirect
 
 from app.api.v2.database import InitDB
 from instance.config import app_configs
@@ -11,6 +11,9 @@ def create_app():
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(app_configs[os.getenv('APP_SETTINGS')])
 
+    @app.route('/', methods=['GET'])
+    def home():
+        return redirect('https://ceebryan.docs.apiary.io/#'), 301
     InitDB(app.config).create_tables()
     from app.api.v2.admin.views import admin_bp
     app.register_blueprint(admin_bp)

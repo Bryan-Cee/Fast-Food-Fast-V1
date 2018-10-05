@@ -7,11 +7,6 @@ from app.api.v2.auth.helper import token_require
 user = Blueprint('users', __name__, url_prefix='/api/v2')
 
 
-@user.route('/', methods=['GET'])
-def home():
-    return redirect('https://ceebryan.docs.apiary.io/#'), 301
-
-
 @user.route('/users/orders', methods=['POST', 'GET'])
 @token_require
 def make_order(current_user):

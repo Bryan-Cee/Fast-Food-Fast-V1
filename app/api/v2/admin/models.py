@@ -5,16 +5,15 @@ import psycopg2.extras
 from instance.config import app_configs
 import os
 
+from ..users.models import conn as connection
+
 
 admin_conn = app_configs[os.getenv('APP_SETTINGS')]
 
 
 class Admin:
     def __init__(self):
-        self.conn = psycopg2.connect(host="localhost",
-                                     database=admin_conn.DBNAME,
-                                     user=admin_conn.USER,
-                                     password=admin_conn.PASSWORD)
+        self.conn = connection
 
     def add_to_menu(self, meal_name, meal_desc, meal_price):
         with self.conn as conn:
