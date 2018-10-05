@@ -1,6 +1,5 @@
 import os
 
-import psycopg2
 from flask import make_response, jsonify
 from werkzeug.security import generate_password_hash
 from instance.config import app_configs
@@ -19,18 +18,14 @@ class Auth:
     def create_user(self, username, password, email):
         with self.conn as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT username FROM Users WHERE username = %s", (username,))
+                cur.execute("SELECT username FROM Users WHERE email = %s", (email,))
                 checks = cur.fetchone()
                 if not username or not password or not email:
-                    conn.rollback()
-                    prompt = ({"status": "Failed",
-                               "message": 'To create an account - '
-                              '"username":"your_username", "password":"your_password", "email":"your@email.com"'})
+                    prompt = {
+                        "status": "failed",
+                        "message": "Enter all the required data correctly"
+                    }
                     return make_response(jsonify(prompt)), 409
-                if checks is not None:
-                    conn.rollback()
-                    return jsonify({"status": "Failed",
-                                    "message": "The username has already been taken please try another"}), 409
                 result = credentials_checker(username, password, email)
                 messages = ('Enter only alphabetic characters for your username',
                             'Enter a password longer than 6 characters',
@@ -39,8 +34,13 @@ class Auth:
                 if result in messages:
                     conn.rollback()
                     return make_response(jsonify({"status": "failed", "message": result}), 409)
+                if checks is not None:
+                    conn.rollback()
+                    return jsonify({"status": "failed",
+                                    "message": "The email has already been registered, use another"}), 409
+
                 hashed_pwd = generate_password_hash(password, method='sha256')
                 cur.execute("INSERT INTO Users(username, email, password) VALUES (%s, %s, %s)",
                             (username, email, hashed_pwd))
                 conn.commit()
-        return make_response(jsonify({"status": "Success", "message": "User has been registered you can login"}), 201)
+        return make_response(jsonify({"status": "success", "message": "User has been registered, you can login"}), 201)
