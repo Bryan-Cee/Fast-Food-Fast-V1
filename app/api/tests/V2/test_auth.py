@@ -9,7 +9,7 @@ class TestAuth(MainTestCase):
         """Test create an account"""
         res = self.client.post('/api/v2/auth/signup',
                                json=self.register_user)
-        self.assertIn(b'Success', res.data)
+        self.assertIn(b'success', res.data)
         self.assertEqual(201, res.status_code)
 
     def test_username_taken(self):
@@ -18,14 +18,14 @@ class TestAuth(MainTestCase):
                          json=self.register_user)
         res = self.client.post('/api/v2/auth/signup',
                                json=self.register_user)
-        self.assertIn(b'The username has already been taken please try another', res.data)
+        self.assertIn(b'The email has already been registered, use another', res.data)
 
     def test_wrong_credentials(self):
         res = self.client.post('/api/v2/auth/signup',
                                json={'username': '',
                                      'password': '',
                                      'email': 'johndoe@gmail.com'})
-        self.assertIn(b'To create an account', res.data)
+        self.assertIn(b'Enter all the required data correctly', res.data)
         res = self.client.post('/api/v2/auth/signup',
                                json={'username': '@2ndne',
                                      'password': 'Bryan12',
