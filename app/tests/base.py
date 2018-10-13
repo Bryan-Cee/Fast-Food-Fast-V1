@@ -3,7 +3,7 @@ import base64
 import os
 import unittest
 import psycopg2
-from app.api.v2.database import Default
+from app.database import Default
 from app import create_app
 
 connector = os.getenv('DATABASE_URL')

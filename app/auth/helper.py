@@ -18,7 +18,7 @@ def token_require(func):
         if 'x-access-token' in request.headers:
             token = request.headers['x-access-token']
         if not token:
-            return make_response(jsonify({"status": "Failed", "message": "Token is missing"}), 401)
+            return make_response(jsonify({"status": "Failed", "message": "Token is missing, please login"}), 401)
         try:
             data = jwt.decode(token, env.SECRET_KEY, algorithms='HS256')
             user_id = data.get('user_id')
@@ -29,5 +29,7 @@ def token_require(func):
         except jwt.exceptions.ExpiredSignatureError:
             return make_response(jsonify({"status": "Failed",
                                           "message": "Token has expired Please login again"}), 401)
+        except Exception as err:
+            return err
         return func(current_user, *args, **kwargs)
     return decorated_func

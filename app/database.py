@@ -25,7 +25,8 @@ class Default:
             meal_id serial PRIMARY KEY NOT NULL,
             meal_name varchar(45) NOT NULL,
             meal_desc varchar(100),
-            meal_price float NOT NULL
+            meal_price float NOT NULL,
+            pic varchar(300)
         );
         
         """

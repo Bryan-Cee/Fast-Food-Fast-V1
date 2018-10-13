@@ -47,13 +47,16 @@ class Admin:
         with self.conn as conn:
             with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
                 cur.execute(
-                    "SELECT Order_id, user_id, meal_name, meal_desc, meal_price, order_status, time_of_order "
+                    "SELECT Order_id, user_id, meal_name, meal_desc, meal_price, order_status, time_of_order, quantity "
                     "FROM Orders "
                     "JOIN Menu ON Menu.meal_id = Orders.meal_id;")
                 orders = cur.fetchall()
                 if not orders:
                     return make_response(jsonify({'status': 'OK', 'message': 'There are no orders currently'}))
-                return make_response(jsonify({"All orders": orders}))
+                for order in orders:
+                    order['total'] = round(order['quantity'] * order['meal_price'],2)
+
+                return make_response(jsonify({"Orders": orders}))
 
     def get_user_orders(self, order_id):
         with self.conn as conn:
@@ -65,7 +68,7 @@ class Admin:
                 history = cur.fetchall()
                 if not history:
                     return make_response(jsonify({'status': 'Not found', 'message': 'There is no order with that ID'}), 404)
-                return make_response(jsonify({"The order": history}))
+                return make_response(jsonify({"Order": history}))
 
     def modify_order(self, order_id, status):
         with self.conn as conn:

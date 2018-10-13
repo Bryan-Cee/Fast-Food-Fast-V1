@@ -12,7 +12,7 @@ admin_bp = Blueprint('admin', __name__, url_prefix='/api/v2')
 def get_menu(current_user):
     if request.method == 'POST':
         if not current_user['admin']:
-            return jsonify({"Failed": "You are not an administrator"}), 401
+            return jsonify({"status": "failed", "message": "You are not an administrator"}), 401
         data = request.get_json(force=True)
         meal_name = data.get('meal_name')
         meal_desc = data.get('meal_desc')
@@ -20,7 +20,6 @@ def get_menu(current_user):
             meal_desc = 'Tasty and sweet'
         meal_price = data.get('meal_price')
         return Admin().add_to_menu(meal_name, meal_desc, meal_price)
-
     return Admin().get_the_menu()
 
   

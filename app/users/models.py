@@ -24,7 +24,7 @@ def place_order(meal_id, user_id, time, quantity):
                 return jsonify({"status": "Not found", "message": "The meal does not exists in the menu"}), 404
             finally:
                 conn.commit()
-    return jsonify({"status": "OK", "message": "Order has been received"}), 201
+    return jsonify({"status": "success", "message": "Order has been received"}), 201
 
 
 def get_history(user_id):
@@ -35,8 +35,8 @@ def get_history(user_id):
                         "JOIN Menu ON Menu.meal_id = Orders.meal_id WHERE Orders.user_id = %s order by time_of_order;",
                         (user_id,))
             history = cur.fetchall()
-            for order in history:
-                order['total'] = order['quantity'] * order['meal_price']
             if not history:
-                return make_response(jsonify({'status': 'OK', 'message': 'You have no history'}))
+                return make_response(jsonify({'status': 'success', 'message': 'You have no history'}))
+            for order in history:
+                order['total'] = round(order['quantity'] * order['meal_price'],2)
             return make_response(jsonify({"history": history}))
