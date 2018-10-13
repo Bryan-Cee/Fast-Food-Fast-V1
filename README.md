@@ -38,18 +38,18 @@ $ flask run
 
 Here is a list of all endpoints
 
-| Endpoint                       | Functionality                 |
-| ------------------------------ | ----------------------------- |
-| GET   /api/v2/orders           | Get all orders                |
+| Endpoint                     | Functionality                 |
+| ---------------------------- | ----------------------------- |
+| GET   /api/v2/orders         | Get all orders                |
 | GET   /api/v2/orders/orderid | Fetch a specific order        |
-| POST   /api/v2/users/orders    | Place a new order             |
-| GET   /api/v2/users/orders    | Get user order history             |
+| POST   /api/v2/users/orders  | Place a new order             |
+| GET   /api/v2/users/orders   | Get user order history        |
 | PUT   /api/v2/orders/orderid | Update the status of an order |
-| PUT   /api/v2/users/orderid | Change the role of a user |
-| POST   /api/v2/menu            | Create a meal in the menu     |
-| GET   /api/v2/menu             | Get all meals in the menu     |
-| GET   /api/v2/auth/signup      | Signup for an account    |
-| GET   /api/v2/auth/login      | login to an account    |
+| PUT   /api/v2/users/orderid  | Change the role of a user     |
+| POST   /api/v2/menu          | Create a meal in the menu     |
+| GET   /api/v2/menu           | Get all meals in the menu     |
+| GET   /api/v2/auth/signup    | Signup for an account         |
+| GET   /api/v2/auth/login     | login to an account           |
 
  ## Heroku
  https://immense-ocean-82555.herokuapp.com

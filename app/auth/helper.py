@@ -5,7 +5,7 @@ from flask import request, make_response, jsonify
 import psycopg2
 import psycopg2.extras
 from instance.config import app_configs
-from ..users.models import conn
+from app.users.models import conn
 
 env = app_configs[os.getenv('APP_SETTINGS')]
 

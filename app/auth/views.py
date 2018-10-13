@@ -7,7 +7,7 @@ from flask import Blueprint, request, make_response, jsonify
 from werkzeug.security import check_password_hash
 from instance.config import app_configs
 import psycopg2.extras
-from ..users.models import conn as connection
+from app.users.models import conn as connection
 
 env = os.getenv('APP_SETTINGS')
 config = app_configs[env]

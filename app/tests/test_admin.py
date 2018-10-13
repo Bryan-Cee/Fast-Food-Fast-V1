@@ -129,9 +129,7 @@ class TestAddMealToMenu(MainTestCase):
         res = self.client.put('/api/v2/orders/1',
                               headers={'x-access-token': final_token},
                               json={"status": "accepted"})
-        self.assertIn(b'Please enter the required status in the correct format: '
-                         b'"status":"the_status" which can be "processing", "complete" '
-                         b'"cancelled"', res.data)
+        self.assertIn(b'Please enter the required status in the correct format', res.data)
         res = self.client.put('/api/v2/orders/254',
                               headers={'x-access-token': final_token},
                               json={"status": "complete"})

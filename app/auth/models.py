@@ -3,8 +3,8 @@ import os
 from flask import make_response, jsonify
 from werkzeug.security import generate_password_hash
 from instance.config import app_configs
-from .validator import credentials_checker
-from ..users.models import conn as connection
+from validator import credentials_checker
+from app.users.models import conn as connection
 
 env = os.getenv('APP_SETTINGS')
 config = app_configs[env]
