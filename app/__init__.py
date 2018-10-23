@@ -17,8 +17,7 @@ def create_app():
 
     @app.route('/', methods=['GET'])
     def home():
-        # return redirect('https://ceebryan.docs.apiary.io/#'), 301
-        return "hello world"
+        return redirect('https://ceebryan.docs.apiary.io/#'), 301
 
     from app.admin.views import admin_bp
     app.register_blueprint(admin_bp)
