@@ -1,5 +1,6 @@
 import os
 import psycopg2
+import psycopg2.extras
 from werkzeug.security import generate_password_hash
 
 from instance.config import app_configs
@@ -26,7 +27,7 @@ class Default:
             meal_name varchar(45) NOT NULL,
             meal_desc varchar(100),
             meal_price float NOT NULL,
-            pic varchar(300)
+            pic varchar(1000)
         );
         
         """
@@ -39,8 +40,8 @@ class Default:
             user_id int NOT NULL,
             order_status varchar(20) DEFAULT 'new' NOT NULL,
             quantity int NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES Users (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
-            FOREIGN KEY (meal_id) REFERENCES Menu (meal_id) ON DELETE CASCADE ON UPDATE CASCADE
+            FOREIGN KEY (user_id) REFERENCES Users (user_id) ON DELETE RESTRICT,
+            FOREIGN KEY (meal_id) REFERENCES Menu (meal_id) 
         );
         """
     )
@@ -57,12 +58,11 @@ class Default:
         """
         DROP TABLE IF EXISTS Menu CASCADE;
         """
-
     )
 
 
 class InitDB:
-    def __init__(self, configs):
+    def __init__(self):
         self.conn = psycopg2.connect(config.DATABASE_URL)
 
     def create_tables(self):

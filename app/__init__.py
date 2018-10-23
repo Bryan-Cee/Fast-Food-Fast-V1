@@ -13,11 +13,12 @@ def create_app():
 
     app.config.from_object(app_configs[os.getenv('APP_SETTINGS')])
 
+    InitDB().create_tables()
+
     @app.route('/', methods=['GET'])
     def home():
-        return redirect('https://ceebryan.docs.apiary.io/#'), 301
-        
-    InitDB(app.config).create_tables()
+        # return redirect('https://ceebryan.docs.apiary.io/#'), 301
+        return "hello world"
 
     from app.admin.views import admin_bp
     app.register_blueprint(admin_bp)

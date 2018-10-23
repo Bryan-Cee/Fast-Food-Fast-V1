@@ -12,7 +12,7 @@ user = Blueprint('users', __name__, url_prefix='/api/v2')
 def make_order(current_user):
     if request.method == 'POST':
         if not current_user:
-            return make_response(jsonify({"status": "Failed", "message": "Please login to order"}), 401)
+            return make_response(jsonify({"status": "failed", "message": "Please login to order"}), 401)
         user_data = request.get_json(force=True)
         meal_id = user_data.get('meal_id')
         user_id = current_user['user_id']
@@ -24,7 +24,7 @@ def make_order(current_user):
         return place_order(meal_id, user_id, time, quantity)
 
     if not current_user:
-        return make_response(jsonify({"status": "Failed",
+        return make_response(jsonify({"status": "failed",
                                       "message": "Login to view order history"}), 401)
     from .models import get_history
     return get_history(current_user['user_id'])

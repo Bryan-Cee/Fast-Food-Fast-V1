@@ -53,7 +53,7 @@ class TestUser(MainTestCase):
         final_token = ast.literal_eval(token.replace(" ", ""))['Token']
         res = self.client.get('/api/v2/users/orders',
                               headers={'x-access-token': final_token})
-        self.assertIn('You have no history', res.get_data(as_text=True))
+        self.assertIn('You have not ordered any meal yet', res.get_data(as_text=True))
 
     def test_get_user_history_ordered(self):
         """Test getting user history"""

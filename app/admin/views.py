@@ -16,13 +16,22 @@ def get_menu(current_user):
         data = request.get_json(force=True)
         meal_name = data.get('meal_name')
         meal_desc = data.get('meal_desc')
+        pic = data.get('pic')
         if not meal_desc:
             meal_desc = 'Tasty and sweet'
         meal_price = data.get('meal_price')
-        return Admin().add_to_menu(meal_name, meal_desc, meal_price)
+        return Admin().add_to_menu(meal_name, meal_desc, meal_price, pic)
     return Admin().get_the_menu()
 
-  
+
+@admin_bp.route('/menu/<meal_id>', methods=['DELETE'])
+@token_require
+def delete_meal(current_user, meal_id):
+    if not current_user['admin']:
+        return jsonify({"status": "failed", "message": "You are not an administrator"}), 401
+    return Admin().del_meal(meal_id)
+
+
 @admin_bp.route('/orders/', methods=['GET'])
 @token_require
 def view_orders(current_user):
@@ -36,7 +45,7 @@ def view_orders(current_user):
 def view_specific_order(current_user, order_id):
     if request.method == 'PUT':
         if not current_user['admin']:
-            return jsonify({"status": "Failed", "message": "You are not an administrator"}), 401
+            return jsonify({"status": "failed", "message": "You are not an administrator"}), 401
         data = request.get_json(force=True)
         status = data.get('status')
         if status not in ('processing', 'cancelled', 'complete'):
@@ -44,7 +53,7 @@ def view_specific_order(current_user, order_id):
             return make_response(jsonify(prompt), 400)
         return Admin().modify_order(order_id, status)
     if not current_user['admin']:
-        return jsonify({"status": "Failed", "message": "You are not an administrator"}), 401
+        return jsonify({"status": "failed", "message": "You are not an administrator"}), 401
     return Admin().get_user_orders(order_id)
 
 

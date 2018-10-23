@@ -31,12 +31,13 @@ def get_history(user_id):
     with conn:
         with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
             cur.execute("SELECT Order_id, meal_name, meal_desc, meal_price,"
-                        " order_status, time_of_order, quantity FROM Orders "
-                        "JOIN Menu ON Menu.meal_id = Orders.meal_id WHERE Orders.user_id = %s order by time_of_order;",
+                        " order_status, time_of_order, quantity, pic FROM Orders "
+                        "JOIN Menu ON Menu.meal_id = Orders.meal_id "
+                        "WHERE Orders.user_id = %s order by time_of_order DESC;",
                         (user_id,))
             history = cur.fetchall()
             if not history:
-                return make_response(jsonify({'status': 'success', 'message': 'You have no history'}))
+                return make_response(jsonify({'status': 'success', 'message': 'You have not ordered any meal yet.'}))
             for order in history:
-                order['total'] = round(order['quantity'] * order['meal_price'],2)
+                order['total'] = round(order['quantity'] * order['meal_price'], 2)
             return make_response(jsonify({"history": history}))
