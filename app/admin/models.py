@@ -74,7 +74,7 @@ class Admin:
     def get_user(self, user_id):
         with self.conn as conn:
             with conn.cursor() as cur:
-                cur.execute("SELECT * FROM users WHERE user_id = %s", (user_id,))
+                cur.execute("SELECT user_id, email, admin FROM users WHERE user_id = %s", (user_id,))
                 user = cur.fetchone()
                 if not user:
                     return make_response(jsonify({'status': 'failed', 'message': "The user doesn't exist"}), 404)
