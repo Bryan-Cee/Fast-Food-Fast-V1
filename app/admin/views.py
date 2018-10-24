@@ -57,11 +57,13 @@ def view_specific_order(current_user, order_id):
     return Admin().get_user_orders(order_id)
 
 
-@admin_bp.route('/users/<user_id>', methods=['PUT'])
+@admin_bp.route('/users/<user_id>', methods=['PUT', 'GET'])
 @token_require
 def make_user_admin(current_user, user_id):
-    if not current_user['admin']:
-        return jsonify({"status": "Failed", "message": "You are not an administrator"}), 401
-    data = request.get_json(force=True)
-    admin = data.get('admin')
-    return Admin().promote_user(admin, user_id)
+    if request.method == 'PUT':
+        if not current_user['admin']:
+            return jsonify({"status": "Failed", "message": "You are not an administrator"}), 401
+        data = request.get_json(force=True)
+        admin = data.get('admin')
+        return Admin().promote_user(admin, user_id)
+    return Admin().get_user(user_id)

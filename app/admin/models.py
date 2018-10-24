@@ -71,6 +71,17 @@ class Admin:
                     return make_response(jsonify({'status': 'failed', 'message': 'There is no order with that ID'}), 404)
                 return make_response(jsonify({"Order": history}))
 
+    def get_user(self, user_id):
+        with self.conn as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT * FROM user WHERE user_id = %s", (user_id,))
+                user = cur.fetchone()
+                if not user:
+                    return make_response(jsonify({'status': 'failed', 'message': "The user doesn't exist"}), 404)
+                return make_response(jsonify({
+                    "user": user
+                }))
+
     def modify_order(self, order_id, status):
         with self.conn as conn:
             with conn.cursor() as cur:
