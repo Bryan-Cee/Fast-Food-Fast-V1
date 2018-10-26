@@ -1,4 +1,3 @@
-
 from flask import jsonify, make_response
 import psycopg2
 import psycopg2.extras
@@ -63,18 +62,19 @@ class Admin:
         with self.conn as conn:
             with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
                 cur.execute(
-                    "SELECT order_id, user_id, meal_name, meal_desc, meal_price, order_status, time_of_order "
+                    "SELECT order_id, user_id, meal_name, meal_desc, meal_price, order_status, time_of_order, pic, quantity "
                     "FROM Orders "
                     "JOIN Menu ON Menu.meal_id = Orders.meal_id WHERE order_id = %s;", (order_id,))
-                history = cur.fetchall()
+                history = cur.fetchone()
                 if not history:
                     return make_response(jsonify({'status': 'failed', 'message': 'There is no order with that ID'}), 404)
+                history['total'] = round(history['quantity'] * history['meal_price'], 2)
                 return make_response(jsonify({"Order": history}))
 
     def get_user(self, user_id):
         with self.conn as conn:
-            with conn.cursor() as cur:
-                cur.execute("SELECT user_id, email, admin FROM users WHERE user_id = %s", (user_id,))
+            with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+                cur.execute("SELECT user_id, username, email, admin FROM users WHERE user_id = %s", (user_id,))
                 user = cur.fetchone()
                 if not user:
                     return make_response(jsonify({'status': 'failed', 'message': "The user doesn't exist"}), 404)

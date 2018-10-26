@@ -63,7 +63,7 @@ def make_user_admin(current_user, user_id):
     if request.method == 'PUT':
         if not current_user['admin']:
             return jsonify({"status": "Failed", "message": "You are not an administrator"}), 401
-        data = request.get_json(force=True)
+        data = request.get_json()
         admin = data.get('admin')
         return Admin().promote_user(admin, user_id)
     return Admin().get_user(user_id)

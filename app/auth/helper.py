@@ -30,7 +30,6 @@ def token_require(func):
             return make_response(jsonify({"status": "failed",
                                           "message": "Token has expired Please login again"}), 401)
         except Exception as err:
-            return make_response(jsonify({"status": "failed",
-                                          "message": "Please login"}), 401)
+            return err
         return func(current_user, *args, **kwargs)
     return decorated_func
