@@ -112,6 +112,15 @@ class Admin:
     def del_meal(self, meal_id):
         with self.conn as conn:
             with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
-                cur.execute("DELETE FROM menu WHERE meal_id = %s", (meal_id,))
-                conn.commit()
+                try:
+                    cur.execute("DELETE FROM menu WHERE meal_id = %s", (meal_id,))
+                except (psycopg2.IntegrityError):
+                    cur.rollback()
+                    return jsonify({
+                        "status": "failed",
+                        "message": "This meal is referenced in the orders table"
+                    })
+                finally:
+                    conn.commit()
+
                 return jsonify({"status": "success", "message": "Meal has been deleted"})
