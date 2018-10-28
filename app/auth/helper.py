@@ -29,7 +29,7 @@ def token_require(func):
         except jwt.exceptions.ExpiredSignatureError:
             return make_response(jsonify({"status": "failed",
                                           "message": "Token has expired Please login again"}), 401)
-        except Exception as err:
-            return err
+        except Exception:
+            return make_response(jsonify({"status": "failed", "message": "Please login"}))
         return func(current_user, *args, **kwargs)
     return decorated_func
