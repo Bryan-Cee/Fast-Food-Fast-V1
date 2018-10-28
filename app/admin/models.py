@@ -115,7 +115,7 @@ class Admin:
                 try:
                     cur.execute("DELETE FROM menu WHERE meal_id = %s", (meal_id,))
                 except (psycopg2.IntegrityError):
-                    cur.rollback()
+                    conn.rollback()
                     return jsonify({
                         "status": "failed",
                         "message": "This meal is referenced in the orders table"
