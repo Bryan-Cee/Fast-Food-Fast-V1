@@ -43,4 +43,4 @@ class Auth:
                 cur.execute("INSERT INTO Users(username, email, password) VALUES (%s, %s, %s)",
                             (username, email, hashed_pwd))
                 conn.commit()
-        return make_response(jsonify({"status": "success", "message": "User has been registered, you can login"}), 201)
+        return make_response(jsonify({"status": "success", "message": "You have been registered, you can now login"}), 201)

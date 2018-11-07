@@ -49,7 +49,7 @@ class Admin:
                 cur.execute(
                     "SELECT Order_id, user_id, meal_name, meal_desc, meal_price, order_status, time_of_order, quantity, pic "
                     "FROM Orders "
-                    "JOIN Menu ON Menu.meal_id = Orders.meal_id;")
+                    "JOIN Menu ON Menu.meal_id = Orders.meal_id order by Order_id DESC;")
                 orders = cur.fetchall()
                 if not orders:
                     return make_response(jsonify({'status': 'success', 'message': 'There are no orders currently'}))
@@ -118,7 +118,7 @@ class Admin:
                     conn.rollback()
                     return jsonify({
                         "status": "failed",
-                        "message": "This meal is referenced in the orders table"
+                        "message": "This meal is referenced in the orders table it cannot be deleted"
                     })
                 finally:
                     conn.commit()
