@@ -50,7 +50,7 @@ class Admin:
                 cur.execute(
                     "SELECT Order_id, user_id, meal_name, meal_desc, meal_price, order_status, time_of_order, quantity, pic "
                     "FROM Orders "
-                    "JOIN Menu ON Menu.meal_id = Orders.meal_id order by order_id ASC;")
+                    "JOIN Menu ON Menu.meal_id = Orders.meal_id order by Order_id ASC;")
                 orders = cur.fetchall()
                 if not orders:
                     return make_response(jsonify({'status': 'success', 'message': 'There are no orders currently'}))
