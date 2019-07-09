@@ -1,0 +1,221 @@
+FORMAT: 1A
+HOST: https://immense-ocean-82555.herokuapp.com/api/v2/
+
+# Fast-Food-Fast-V2
+Fast-Food-Fast is a food delivery service app for a restaurant.
+
+## Authentication
+This API uses Basic Authentication for its authentication.
+
+The parameters that are needed to be sent for this type of authentication are as follows:
++ `username`
++ `password`
+
+# Group Admin
+
+## Menu [/menu]
+
+### Add meal to menu [POST]
+You can add a meal to the menu. The field required are the meal name and price, the meal description is optional but is set to 'Tasty and sweet' if not provided.
+
++ Request (application/json)
+    + Headers
+
+            x-access-token:eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJpYXQiOjE1Mzg2MTA4ODYsImV4cCI6MTUzODYwMzY4Nn0.GHNDRh2H4yuX4E258rEhajflg7RfIKfx-2CQO9vtquk
+
+    + Attributes (Add meal to menuRequest)
+
+    + Body
+
+            {
+                "meal_name": "Pizza",
+                "meal_price": 2.99,
+                "meal_desc": "Seasoned with pepper"
+            }
+
+
++ Response 201 
+
+
+### Get the menu [GET]
+View all the meals in the menu
+
++ Request 
+    + Headers
+
+            x-access-token:eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJpYXQiOjE1Mzg2MTA4MDgsImV4cCI6MTUzODYwMzYwOH0.clRf3WB_o0Zei3aBTXdbeB8HYWPh5POYcQ4GbS03jhw
+
+
+
+
++ Response 200 
+
+
+
+## Orders [/orders/1]
+
+### Get specific order [GET]
+Admin can get a specific order through this route
+
++ Request 
+    + Headers
+
+            x-access-token:eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJpYXQiOjE1Mzg2MDYzNjYsImV4cCI6MTUzODU5OTE2Nn0.pR8hAI9cG8vRG4ERSaoqm8dRd7s3KEQDgK_rGwuFSo8
+
+
+
+
++ Response 200
+
+### Update order [PUT]
+The admin can update the status of an order through this route. The only acceptable updates are ('cancelled', 'processing' or 'complete')
+
++ Request (application/json)
+    + Headers
+
+            x-access-token:eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJpYXQiOjE1Mzg2MDY0NjcsImV4cCI6MTUzODU5OTI2N30.PNMT-bkYoy_0USdDNM2uKbyF_1uhe6JBme12N4T0QB4
+
+    + Attributes (Update orderRequest)
+
+    + Body
+
+            {
+                "status": "processing"
+            }
+
+
++ Response 201 
+
+
+## View Orders [/orders/]
+
+### Get all orders [GET]
+Admin can view all the orders made by the users.
+
++ Request 
+    + Headers
+
+            x-access-token:eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJpYXQiOjE1Mzg2MDYzNjYsImV4cCI6MTUzODU5OTE2Nn0.pR8hAI9cG8vRG4ERSaoqm8dRd7s3KEQDgK_rGwuFSo8
+
+
+
+
++ Response 200 
+
+
+
+
+# Group User
+
+## Users Orders [/users/orders]
+
+### Create order [POST]
+Users can place an order through this route. The order status is set to 'new' by default. The required parameters are the meal id and the quatity which is set to 1 if not provided.
+
++ Request (application/json)
+    + Headers
+
+            x-access-token:eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJpYXQiOjE1Mzg2MTA5MTQsImV4cCI6MTUzODYwMzcxNH0.ipbREgCxmtZlq5W3Y3X26W4QUOkvsSPTUrQGCnR9EeE
+
+    + Attributes (Create orderRequest)
+
+    + Body
+
+            {
+                "meal_id": 1,
+                "quantity": 2
+            }
+
+
++ Response 201 
+
+
+
+### Get user history [GET]
+Users can view their order history through this route.
+
++ Request 
+    + Headers
+
+            x-access-token:eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJpYXQiOjE1Mzg2MTA5MTQsImV4cCI6MTUzODYwMzcxNH0.ipbREgCxmtZlq5W3Y3X26W4QUOkvsSPTUrQGCnR9EeE
+
+
+
+
++ Response 200 
+
+
+# Group Auth
+
+## Login [/auth/login]
+
+### Login User [POST]
+Users can login using this route by providing their username and password.
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic Bryan:Bryan12
+
++ Response 201 
+
+
+
+
+## Signup [/auth/signup]
+
+### Sign up [POST]
+Users can create an account from here by providing their username, email and password
+
++ Request (application/json)
+    + Attributes (Sign upRequest)
+
+    + Body
+
+            {
+                "username": "Bryan",
+                "password": "Bryan12",
+                "email": "cheruiyotbryan@gmil.com"
+            }
+
+
++ Response 201 
+
+
+
+
+
+# Data Structures
+
+## Add meal to menuRequest (object)
+
+
+### Properties
++ `meal_name`: `Pizza` (string, required) 
++ `meal_price`: `2.99` (number, required) 
++ `meal_desc`: `Seasoned with pepper` (string, required) 
+
+
+## Update orderRequest (object)
+
+
+### Properties
++ `status`: `processing` (string, required) 
+
+
+## Create orderRequest (object)
+
+
+### Properties
++ `meal_id`: `1` (number, required) 
++ `quantity`: `2` (number, required) 
+
+
+## Sign upRequest (object)
+
+
+### Properties
++ `username`: `Bryan` (string, required) 
++ `password`: `Bryan12` (string, required) 
++ `email`: `cheruiyotbryan@gmil.com` (string, required)
